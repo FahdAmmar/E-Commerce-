@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-
+import { useFilter } from "../context/FilterContext"
 
 interface Product {
     categories:string
@@ -13,6 +13,18 @@ interface FetchResponse {
 
 
 function Slider() {
+    const {
+        searchQuery,
+        setSearchQuery,
+        selectedCategory,
+        setSelectedCategory,
+        minPrice,
+        setMinPrice,
+        maxPrice,
+        setMaxPrice,
+        keyword,
+        setKeyword,
+    }=useFilter();
     const [categories, setCategories]=useState<string[]>([])
     const [keywords]=useState<string[]>([
         "apple",
@@ -22,7 +34,7 @@ function Slider() {
         "shoes",
         "shirt",
     ])
-
+    const [activeKeyword, setActiveKeyword] = useState<string|null>(null);
 
 
     useEffect(()=>{
@@ -44,6 +56,35 @@ function Slider() {
         fetchCategories()
     },[])
 
+    const handleMinPrice =(e:React.ChangeEvent<HTMLInputElement>)=>{
+        const value = e.target.value;
+        setMinPrice(value? parseFloat(value):undefined)
+    }
+
+    const handleMaxPrice = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setMaxPrice(value ? parseFloat(value) : undefined)
+    }
+
+    const handleRadioChangecategories =(category:string)=>{
+    setSelectedCategory(category)
+    }
+
+    const handleKeywordClick=(keyword:string)=>{
+        setKeyword(keyword);
+        setActiveKeyword(keyword);
+    }
+
+    const handleResetFilter=()=>{
+
+        setSearchQuery("")
+        setSelectedCategory("")
+        setMinPrice(undefined)
+        setMaxPrice(undefined)
+        setKeyword("")
+
+    }
+
 
   return (
     <aside className="w-64 p-5 h-screen">
@@ -51,13 +92,21 @@ function Slider() {
         <section>
             <input type="text"
              className="border-2 rounded px-2 sm:mb-0"
-             placeholder="Search Product">
+             placeholder="Search Product"
+             value={searchQuery}
+             onChange={(e)=>setSearchQuery(e.target.value)}>
             </input>
             <div className="flex justify-center items-center">
                 <input type="text" className="border-2 mr-2 px-5 py-3 w-full "
-                placeholder="Min" />
-                  <input type="text" className="border-2 mr-2 px-5 py-3 w-full "
-                      placeholder="Max" />
+                placeholder="Min"
+                value={minPrice ?? ""}
+                onChange={handleMinPrice}/>
+                
+
+                <input type="text" className="border-2 mr-2 px-5 py-3 w-full "
+                 placeholder="Max"
+                value={maxPrice??""}
+                onChange={handleMaxPrice} />
 
             </div>
             {/*Categories section*/}
@@ -69,7 +118,9 @@ function Slider() {
                 <label key={index} className="block mb-2">
                     <input type="radio" name="category"
                     value={category} 
-                    className="mr-2 w-\[16px\] h-\[16px\]"/>
+                    className="mr-2 w-\[16px\] h-\[16px\]"
+                        onChange={() => handleRadioChangecategories(category)}
+                        checked={selectedCategory==category}/>
                     {category.toLocaleUpperCase()}
                 </label>
             ))}
@@ -80,15 +131,16 @@ function Slider() {
                 <div>
                     {keywords.map((keyword ,index)=>(
                         <button key={index}
-                        className="block mb-2 px-4 min-w-full text-left
-                         border rounded hover:bg-gray-200"> 
+                            className={`block mb-2 px-4 min-w-full text-left
+                         border rounded ${activeKeyword === keyword ?'bg-gray-200': 'hover:bg-gray-200'}`}
+                         onClick={()=>handleKeywordClick(keyword)}> 
                          {keyword.toUpperCase()}
                         </button>
                     ))}
                 </div>
             </div>
 
-            <button className="w-full mb-16 py-2 bg-black text-white mt-5">Reset Filters</button>
+            <button onClick={(handleResetFilter)} className="w-full mb-16 py-2 bg-black text-white mt-5">Reset Filters</button>
 
 
 
