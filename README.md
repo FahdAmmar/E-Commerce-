@@ -1,6 +1,10 @@
 # 🛒 Simple E-Commerce
 A simple and responsive e-commerce frontend application built with modern web technologies.
+
+
+
 <img align="center" src="./public/Ecommerce.png" width='1000px' height='400px'/>
+
 
 
 <p align="center">
