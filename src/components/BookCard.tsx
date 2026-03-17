@@ -61,11 +61,11 @@ const BookCard: React.FC<BookCardProps> = ({ id, title, image, price }) => {
                     />
                 </div>
 
-                <div className="p-5 flex flex-col items-start flex-grow">
+                <div className="p-5 flex flex-col items-start grow">
                     <h2 className="text-lg font-bold text-gray-800 line-clamp-2 mb-2 min-h-[3.5rem] leading-snug">
                         {title}
                     </h2>
-                    <p className="text-xl font-semibold text-blue-600 mt-auto">
+                    <p className="text-xl font-semibold text-blue-400 mt-auto">
                         ${price}
                     </p>
                 </div>
@@ -73,7 +73,7 @@ const BookCard: React.FC<BookCardProps> = ({ id, title, image, price }) => {
 
             <button
                 onClick={handleAddToCart}
-                className="absolute bottom-4 right-4 bg-black text-white p-3 rounded-full shadow-lg  translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:bg-blue-600 hover:scale-110 z-10"
+                className="absolute bottom-4 right-4 bg-black text-white p-3 rounded-full shadow-lg  translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:bg-blue-400 hover:scale-110 z-10"
                 title="Add to Cart"
             >
                 <ShoppingCart className="w-5 h-5" />

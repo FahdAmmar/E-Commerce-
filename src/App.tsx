@@ -5,7 +5,7 @@ import ProductPage from "./components/ProductPage"
 import CartPage from "./components/CartPage"
 import { useState } from "react"
 function App() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
 

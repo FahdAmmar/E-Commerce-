@@ -15,7 +15,6 @@ function MainContent({ isOpen, toggleSidebar }: SliderProps) {
   const { searchQuery, selectedCategory, minPrice, maxPrice, keyword } = useFilter();
   const { totalItems } = useCart();
 
-  // تصحيح التسمية: products بدلاً من produects
   const [products, setProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>("all");
@@ -90,7 +89,7 @@ function MainContent({ isOpen, toggleSidebar }: SliderProps) {
   }, [products, selectedCategory, minPrice, maxPrice, searchQuery, filter]);
 
   // Pagination Logic
-  const totalProducts = 100; // يفضل جلب هذا العدد من الـ API
+  const totalProducts: number = 100;
   const totalPages = Math.ceil(totalProducts / itemsPerPage);
 
   const handlePageChange = (page: number) => {
@@ -103,8 +102,8 @@ function MainContent({ isOpen, toggleSidebar }: SliderProps) {
   const getPaginationButtons = () => {
     const buttons: number[] = [];
     // منطق مبسط وأوضح
-    let startPage = Math.max(1, currentPage - 2);
-    let endPage = Math.min(totalPages, currentPage + 2);
+    const startPage = Math.max(1, currentPage - 2);
+    const endPage = Math.min(totalPages, currentPage + 2);
 
     for (let page = startPage; page <= endPage; page++) { // تم تصحيح الشرط إلى <=
       buttons.push(page);
