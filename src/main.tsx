@@ -1,21 +1,50 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-import { BrowserRouter } from 'react-router-dom'
-import { FilterProvider } from './context/FilterContext.tsx'
-import { CartProvider } from './context/CartContext.tsx'
-import 'sweetalert2/dist/sweetalert2.css';
+/**
+ * ============================================
+ * Application Entry Point
+ * ============================================
+ * Renders the root React component with providers
+ */
 
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import './index.css';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+// ============================================
+// Error Boundary for Production
+// ============================================
+
+/**
+ * Global error handler for uncaught errors
+ */
+window.onerror = (message, source, lineno, colno, error) => {
+  console.error('Global error:', { message, source, lineno, colno, error });
+  // In production, you might want to send this to an error tracking service
+  return false;
+};
+
+/**
+ * Global handler for unhandled promise rejections
+ */
+window.onunhandledrejection = (event) => {
+  console.error('Unhandled promise rejection:', event.reason);
+  // In production, you might want to send this to an error tracking service
+};
+
+// ============================================
+// Render Application
+// ============================================
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
+
+root.render(
+  <React.StrictMode>
+    {/* BrowserRouter enables client-side routing */}
     <BrowserRouter>
-      <CartProvider>
-        <FilterProvider>
-          <App />
-        </FilterProvider>
-      </CartProvider>
+      <App />
     </BrowserRouter>
-  </StrictMode>,
-)
+  </React.StrictMode>
+);
