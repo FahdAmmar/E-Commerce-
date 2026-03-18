@@ -1,84 +1,36 @@
+// src/App.tsx
+// =================== الملف الرئيسي للتطبيق ===================
 
-import { Route, Routes } from 'react-router-dom';
-import { useState } from 'react';
-
-// Context Providers
-import { CartProvider } from './context/CartContext';
-import { FilterProvider } from './context/FilterContext';
-
-// Components
-import Slider from './components/Slider';
-import MainContent from './components/MainContent';
-import ProductPage from './components/ProductPage';
-import CartPage from './components/CartPage';
-
-// ============================================
-// App Component
-// ============================================
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AppProvider } from './context/AppContext';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import ProductDetails from './pages/ProductDetails';
+import Cart from './pages/Cart';
+import Wishlist from './pages/Wishlist';
+import Products from './pages/Products';
 
 function App() {
-  // ========================================
-  // State for sidebar toggle
-  // ========================================
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
-
-  /**
-   * Toggle sidebar visibility
-   */
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
-  };
-
   return (
-    // ========================================
-    // Wrap with providers
-    // ========================================
-    <CartProvider>
-      <FilterProvider>
-        {/* Main container */}
-        <main className="w-screen min-h-screen flex overflow-x-hidden bg-gray-50">
-          {/* Sidebar component */}
-          <Slider isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-
-          {/* Main content area */}
-          <div className="flex-1 w-full">
+    <Router>
+      <AppProvider>
+        <div className="min-h-screen flex flex-col">
+          <Header />
+          <main className="flex-grow">
             <Routes>
-              {/* Home route - Product listing */}
-              <Route
-                path="/"
-                element={
-                  <MainContent
-                    isOpen={isSidebarOpen}
-                    toggleSidebar={toggleSidebar}
-                  />
-                }
-              />
-
-              {/* Product detail route */}
-              <Route path="/product/:id" element={<ProductPage />} />
-
-              {/* Shopping cart route */}
-              <Route path="/cart" element={<CartPage />} />
-
-              {/* 404 - Not found route */}
-              <Route
-                path="*"
-                element={
-                  <div className="flex flex-col items-center justify-center min-h-screen">
-                    <h1 className="text-4xl font-bold text-gray-800 mb-4">
-                      404 - Page Not Found
-                    </h1>
-                    <p className="text-gray-600">
-                      The page you're looking for doesn't exist.
-                    </p>
-                  </div>
-                }
-              />
+              <Route path="/" element={<Home />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/product/:id" element={<ProductDetails />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/wishlist" element={<Wishlist />} />
             </Routes>
-          </div>
-        </main>
-      </FilterProvider>
-    </CartProvider>
+          </main>
+          <Footer />
+        </div>
+      </AppProvider>
+    </Router>
   );
 }
 

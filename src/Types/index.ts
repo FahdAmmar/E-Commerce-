@@ -1,169 +1,62 @@
-/**
- * ============================================
- * Type Definitions - Centralized Type System
- * ============================================
- * This file contains all TypeScript interfaces and types
- * used throughout the application for better maintainability
- */
+// src/Types/index.ts
+// =================== تعريف أنواع البيانات ===================
 
-// ============================================
-// Product Types
-// ============================================
-
-/**
- * Represents a single product from the API
- */
+// نوع المنتج
 export interface Product {
     id: number;
     title: string;
     description: string;
     price: number;
-    discountPercentage?: number;
+    discountPercentage: number;
     rating: number;
     stock: number;
-    brand?: string;
+    brand: string;
     category: string;
     thumbnail: string;
     images: string[];
-    tags?: string[];
-    sku?: string;
-    weight?: number;
-    dimensions?: {
-        width: number;
-        height: number;
-        depth: number;
-    };
-    warrantyInformation?: string;
-    shippingInformation?: string;
-    availabilityStatus?: string;
-    reviews?: Review[];
-    returnPolicy?: string;
-    minimumOrderQuantity?: number;
-    meta?: {
-        createdAt: string;
-        updatedAt: string;
-        barcode: string;
-        qrCode: string;
-    };
 }
 
-/**
- * Product review interface
- */
-export interface Review {
-    rating: number;
-    comment: string;
-    date: string;
-    reviewerName: string;
-    reviewerEmail: string;
-}
-
-/**
- * API response for products list
- */
-export interface ProductsResponse {
+// نوع حالة التطبيق
+export interface AppState {
     products: Product[];
-    total: number;
-    skip: number;
-    limit: number;
+    currentProduct: Product | null;
+    loading: boolean;
+    error: string | null;
+    cart: CartItem[];
+    wishlist: number[];
 }
 
-// ============================================
-// Cart Types
-// ============================================
-
-/**
- * Item in the shopping cart
- */
+// نوع عنصر السلة
 export interface CartItem {
-    id: string;
+    id: number;
     title: string;
     price: number;
-    image: string;
     quantity: number;
-    category?: string;
+    thumbnail: string;
 }
 
-/**
- * Cart state interface
- */
-export interface CartState {
-    items: CartItem[];
-    totalItems: number;
-    totalPrice: number;
-}
+// أنواع الأكشنز
+export type Action =
+    | { type: 'FETCH_PRODUCTS_START' }
+    | { type: 'FETCH_PRODUCTS_SUCCESS'; payload: Product[] }
+    | { type: 'FETCH_PRODUCTS_ERROR'; payload: string }
+    | { type: 'FETCH_PRODUCT_START' }
+    | { type: 'FETCH_PRODUCT_SUCCESS'; payload: Product }
+    | { type: 'FETCH_PRODUCT_ERROR'; payload: string }
+    | { type: 'ADD_TO_CART'; payload: Product }
+    | { type: 'REMOVE_FROM_CART'; payload: number }
+    | { type: 'UPDATE_CART_QUANTITY'; payload: { id: number; quantity: number } }
+    | { type: 'TOGGLE_WISHLIST'; payload: number }
+    | { type: 'CLEAR_ERROR' };
 
-/**
- * Cart action types for useReducer
- */
-export type CartActionType =
-    | { type: 'ADD_TO_CART'; payload: Omit<CartItem, 'quantity'> }
-    | { type: 'REMOVE_FROM_CART'; payload: { id: string } }
-    | { type: 'INCREASE_QUANTITY'; payload: { id: string } }
-    | { type: 'DECREASE_QUANTITY'; payload: { id: string } }
-    | { type: 'CLEAR_CART' }
-    | { type: 'LOAD_CART'; payload: CartItem[] };
-
-// ============================================
-// Filter Types
-// ============================================
-
-/**
- * Filter state interface
- */
-export interface FilterState {
-    searchQuery: string;
-    selectedCategory: string;
-    minPrice: number | undefined;
-    maxPrice: number | undefined;
-    keyword: string;
-    sortBy: SortOption;
-}
-
-/**
- * Sort options available
- */
-export type SortOption = 'all' | 'cheap' | 'expensive' | 'popular';
-
-/**
- * Filter action types for useReducer
- */
-export type FilterActionType =
-    | { type: 'SET_SEARCH_QUERY'; payload: string }
-    | { type: 'SET_CATEGORY'; payload: string }
-    | { type: 'SET_MIN_PRICE'; payload: number | undefined }
-    | { type: 'SET_MAX_PRICE'; payload: number | undefined }
-    | { type: 'SET_KEYWORD'; payload: string }
-    | { type: 'SET_SORT'; payload: SortOption }
-    | { type: 'RESET_FILTERS' };
-
-// ============================================
-// UI Types
-// ============================================
-
-/**
- * Loading states
- */
-export interface LoadingState {
-    products: boolean;
-    categories: boolean;
-    productDetail: boolean;
-}
-
-/**
- * Error states
- */
-export interface ErrorState {
-    products: string | null;
-    categories: string | null;
-    productDetail: string | null;
-}
-
-/**
- * Pagination state
- */
-export interface PaginationState {
-    currentPage: number;
-    totalPages: number;
-    itemsPerPage: number;
+// نوع السياق
+export interface AppContextType {
+    state: AppState;
+    dispatch: React.Dispatch<Action>;
+    fetchProducts: () => Promise<void>;
+    fetchProductById: (id: number) => Promise<void>;
+    addToCart: (product: Product) => void;
+    removeFromCart: (id: number) => void;
+    updateCartQuantity: (id: number, quantity: number) => void;
+    toggleWishlist: (id: number) => void;
 }
