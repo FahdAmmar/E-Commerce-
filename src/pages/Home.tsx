@@ -1,15 +1,16 @@
 // src/pages/Home.tsx
-// =================== الصفحة الرئيسية ===================
+// =================== الصفحة الرئيسية المحسنة ===================
 
 import React, { useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
 import Slider from '../components/Slider';
 import ProductCard from '../components/ProductCard';
+import { useNavigate } from 'react-router-dom';
 
 const Home: React.FC = () => {
     const { state, fetchProducts } = useAppContext();
+    const navigate = useNavigate();
 
-    // جلب المنتجات عند تحميل الصفحة
     useEffect(() => {
         fetchProducts();
     }, []);
@@ -19,7 +20,7 @@ const Home: React.FC = () => {
         return (
             <div className="container-custom py-12">
                 <div className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--accent-color)]"></div>
                 </div>
             </div>
         );
@@ -42,6 +43,9 @@ const Home: React.FC = () => {
         );
     }
 
+    // الحصول على أول 4 فئات لعرضها
+    const featuredCategories = state.categories.slice(0, 4);
+
     return (
         <div className="container-custom py-8">
             {/* السلايدر */}
@@ -49,8 +53,101 @@ const Home: React.FC = () => {
                 <Slider products={state.products.slice(0, 10)} />
             )}
 
+            {/* قسم الفئات المحسن */}
+            {featuredCategories.length > 0 && (
+                <section className="mt-16">
+                    <div className="flex items-center justify-between mb-8">
+                        <h2 className="text-2xl font-bold">Shop by Category</h2>
+                        <button
+                            onClick={() => navigate('/products')}
+                            className="text-[var(--accent-color)] hover:underline flex items-center"
+                        >
+                            View All
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {featuredCategories.map((category, index) => {
+                            const categoryProducts = state.products.filter(p => p.category === category.name);
+                            const firstProduct = categoryProducts[0];
+
+                            return (
+                                <div
+                                    key={category.name}
+                                    onClick={() => navigate(`/products?category=${category.name}`)}
+                                    className="category-card group"
+                                >
+                                    {/* صورة الفئة */}
+                                    <img
+                                        src={category.image}
+                                        alt={category.name}
+                                        className="category-card-image"
+                                    />
+
+                                    {/* طبقة التدرج والمحتوى */}
+                                    <div className="category-card-overlay">
+                                        <div className="flex items-center mb-2">
+                                            <span className="text-2xl mr-2">{category.icon}</span>
+                                            <h3 className="text-xl font-semibold capitalize">
+                                                {category.name.replace('-', ' ')}
+                                            </h3>
+                                        </div>
+
+                                        <div className="flex items-center justify-between">
+                                            <p className="text-sm text-gray-200">
+                                                {category.count} Products
+                                            </p>
+
+                                            {/* عرض منتج مميز من الفئة */}
+                                            {firstProduct && (
+                                                <div className="flex items-center space-x-1">
+                                                    <span className="text-[var(--highlight-color)] font-bold">
+                                                        ${firstProduct.price}
+                                                    </span>
+                                                    {firstProduct.discountPercentage > 0 && (
+                                                        <span className="text-xs line-through text-gray-400">
+                                                            ${firstProduct.price}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* شريط التقدم للخصومات */}
+                                        {categoryProducts.some(p => p.discountPercentage > 0) && (
+                                            <div className="mt-3">
+                                                <div className="flex items-center text-xs text-[var(--highlight-color)]">
+                                                    <span>Up to</span>
+                                                    <span className="font-bold ml-1">
+                                                        {Math.max(...categoryProducts.map(p => p.discountPercentage))}% OFF
+                                                    </span>
+                                                </div>
+                                                <div className="w-full bg-gray-700 rounded-full h-1 mt-1">
+                                                    <div
+                                                        className="bg-[var(--highlight-color)] h-1 rounded-full transition-all duration-500 group-hover:w-full"
+                                                        style={{
+                                                            width: `${Math.max(...categoryProducts.map(p => p.discountPercentage))}%`
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* تأثير Hover */}
+                                    <div className="absolute inset-0 border-2 border-transparent group-hover:border-[var(--accent-color)] rounded-xl transition-all duration-300 pointer-events-none" />
+                                </div>
+                            );
+                        })}
+                    </div>
+                </section>
+            )}
+
             {/* قسم المنتجات المميزة */}
-            <section className="mt-12">
+            <section className="mt-16">
                 <h2 className="text-2xl font-bold mb-6">Featured Products</h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -60,19 +157,20 @@ const Home: React.FC = () => {
                 </div>
             </section>
 
-            {/* قسم الفئات */}
+            {/* قسم العروض الخاصة */}
             <section className="mt-16">
-                <h2 className="text-2xl font-bold mb-6">Shop by Category</h2>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {['Electronics', 'Fashion', 'Home', 'Sports'].map(category => (
-                        <div
-                            key={category}
-                            className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-lg text-center cursor-pointer hover:from-blue-600 hover:to-blue-700 transition"
+                <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[var(--accent-color)] to-[var(--highlight-color)] p-8">
+                    <div className="absolute inset-0 bg-black/20" />
+                    <div className="relative z-10 text-white text-center">
+                        <h2 className="text-3xl font-bold mb-4">Special Offers</h2>
+                        <p className="text-xl mb-6">Get up to 50% off on selected items</p>
+                        <button
+                            onClick={() => navigate('/products')}
+                            className="bg-white text-[var(--accent-color)] px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition"
                         >
-                            <h3 className="text-xl font-semibold">{category}</h3>
-                        </div>
-                    ))}
+                            Shop Now
+                        </button>
+                    </div>
                 </div>
             </section>
         </div>

@@ -1,8 +1,8 @@
 // src/components/ProductCard.tsx
-// =================== مكون بطاقة المنتج ===================
+// =================== مكون بطاقة المنتج المحسن ===================
 
 import React from 'react';
-import type { Product } from '..//types/index';
+import type { Product } from '../types/index';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 
@@ -21,17 +21,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         : product.price;
 
     return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        <div className="card group hover:transform hover:-translate-y-1">
             {/* صورة المنتج */}
             <div
                 onClick={() => navigate(`/product/${product.id}`)}
-                className="relative cursor-pointer group"
+                className="relative cursor-pointer overflow-hidden rounded-t-lg"
             >
                 <img
                     src={product.thumbnail}
                     alt={product.title}
-                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500 product-image"
                 />
+
+                {/* طبقة التدرج على الصورة في Dark Mode */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                 {/* زر المفضلة */}
                 <button
@@ -39,11 +42,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                         e.stopPropagation();
                         toggleWishlist(product.id);
                     }}
-                    className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition"
+                    className={`absolute top-2 right-2 p-2 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 ${isInWishlist
+                        ? 'bg-[var(--highlight-color)] text-white'
+                        : 'bg-[var(--card-bg)] text-[var(--text-primary)] hover:bg-[var(--highlight-color)] hover:text-white'
+                        }`}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className={`h-5 w-5 ${isInWishlist ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+                        className="h-5 w-5"
                         fill={isInWishlist ? 'currentColor' : 'none'}
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -54,39 +60,49 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
                 {/* علامة الخصم */}
                 {discount > 0 && (
-                    <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                        {discount}% OFF
+                    <span className="absolute top-2 left-2 bg-[var(--highlight-color)] text-white text-xs font-bold px-2 py-1 rounded-full">
+                        -{discount}%
                     </span>
                 )}
+
+                {/* مؤشر التقييم */}
+                <div className="absolute bottom-2 left-2 flex items-center bg-black/50 text-white px-2 py-1 rounded-full text-sm">
+                    <span className="text-yellow-400 mr-1">★</span>
+                    {product.rating}
+                </div>
             </div>
 
             {/* معلومات المنتج */}
             <div className="p-4">
                 <h3
                     onClick={() => navigate(`/product/${product.id}`)}
-                    className="font-semibold text-lg mb-2 hover:text-blue-600 cursor-pointer"
+                    className="font-semibold text-lg mb-2 hover:text-[var(--accent-color)] cursor-pointer transition line-clamp-1"
                 >
                     {product.title}
                 </h3>
 
-                <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+                <p className="text-[var(--text-primary)]/70 text-sm mb-3 line-clamp-2">
                     {product.description}
                 </p>
 
-                <div className="flex items-center mb-2">
-                    <span className="text-yellow-400">★</span>
-                    <span className="text-sm text-gray-600 ml-1">
-                        {product.rating} ({product.stock} in stock)
-                    </span>
+                <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                        <span className="text-sm text-[var(--text-primary)]/60">
+                            {product.brand}
+                        </span>
+                        <span className="text-xs px-2 py-1 bg-[var(--border-color)] rounded-full">
+                            {product.stock} left
+                        </span>
+                    </div>
                 </div>
 
                 <div className="flex items-center justify-between">
                     <div>
-                        <span className="text-xl font-bold text-blue-600">
+                        <span className="text-xl font-bold text-[var(--accent-color)]">
                             ${finalPrice}
                         </span>
                         {discount > 0 && (
-                            <span className="text-sm text-gray-400 line-through ml-2">
+                            <span className="text-sm text-[var(--text-primary)]/50 line-through ml-2">
                                 ${product.price}
                             </span>
                         )}
@@ -94,7 +110,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
                     <button
                         onClick={() => addToCart(product)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full transition"
+                        className="bg-[var(--accent-color)] hover:bg-opacity-90 text-white p-2 rounded-full transition-all transform hover:scale-110 hover:rotate-12"
                         title="Add to cart"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

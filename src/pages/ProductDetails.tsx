@@ -1,19 +1,23 @@
 // src/pages/ProductDetails.tsx
-// =================== صفحة تفاصيل المنتج ===================
+// =================== صفحة تفاصيل المنتج المحسنة ===================
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
+import ProductCard from '../components/ProductCard';
 
 const ProductDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { state, fetchProductById, addToCart, toggleWishlist } = useAppContext();
+    const { state, fetchProductById, addToCart, toggleWishlist, getProductsByCategory } = useAppContext();
     const [selectedImage, setSelectedImage] = useState<string>('');
+    const [quantity, setQuantity] = useState(1);
+    const [activeTab, setActiveTab] = useState<'description' | 'details'>('description');
 
     useEffect(() => {
         if (id) {
             fetchProductById(parseInt(id));
+            window.scrollTo(0, 0);
         }
     }, [id]);
 
@@ -28,7 +32,7 @@ const ProductDetails: React.FC = () => {
         return (
             <div className="container-custom py-12">
                 <div className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--accent-color)]"></div>
                 </div>
             </div>
         );
@@ -58,49 +62,80 @@ const ProductDetails: React.FC = () => {
 
     const isInWishlist = state.wishlist.includes(product.id);
     const discount = product.discountPercentage;
-    const finalPrice = discount > 0
-        ? (product.price * (1 - discount / 100)).toFixed(2)
-        : product.price;
+    const finalPrice = (product.price * (1 - discount / 100)).toFixed(2);
+
+    // منتجات مشابهة من نفس الفئة
+    const similarProducts = getProductsByCategory(product.category)
+        .filter(p => p.id !== product.id)
+        .slice(0, 4);
 
     return (
         <div className="container-custom py-8">
-            {/* زر الرجوع */}
-            <button
-                onClick={() => navigate(-1)}
-                className="mb-6 flex items-center text-gray-600 hover:text-blue-600 transition"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-                </svg>
-                Back
-            </button>
+            {/* مسار التنقل (Breadcrumb) */}
+            <nav className="flex items-center space-x-2 text-sm mb-6">
+                <button onClick={() => navigate('/')} className="text-[var(--text-primary)]/60 hover:text-[var(--accent-color)]">
+                    Home
+                </button>
+                <span className="text-[var(--text-primary)]/60">/</span>
+                <button onClick={() => navigate('/products')} className="text-[var(--text-primary)]/60 hover:text-[var(--accent-color)]">
+                    Products
+                </button>
+                <span className="text-[var(--text-primary)]/60">/</span>
+                <button
+                    onClick={() => navigate(`/products?category=${product.category}`)}
+                    className="text-[var(--text-primary)]/60 hover:text-[var(--accent-color)]"
+                >
+                    {product.category}
+                </button>
+                <span className="text-[var(--text-primary)]/60">/</span>
+                <span className="text-[var(--accent-color)] font-semibold">{product.title}</span>
+            </nav>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* قسم الصور */}
-                <div>
-                    {/* الصورة الرئيسية */}
-                    <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                {/* قسم الصور المحسن */}
+                <div className="space-y-4">
+                    {/* الصورة الرئيسية مع تأثيرات */}
+                    <div className="relative card p-4 group">
                         <img
                             src={selectedImage}
                             alt={product.title}
-                            className="w-full h-96 object-contain"
+                            className="w-full h-96 object-contain product-image"
                         />
+
+                        {/* أيقونة التكبير */}
+                        <button
+                            onClick={() => window.open(selectedImage, '_blank')}
+                            className="absolute bottom-4 right-4 bg-[var(--card-bg)]/90 backdrop-blur p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                            </svg>
+                        </button>
+
+                        {/* شارة التوفير */}
+                        {discount > 0 && (
+                            <div className="absolute top-4 left-4 bg-[var(--highlight-color)] text-white px-3 py-1 rounded-full font-bold">
+                                Save ${(product.price - Number(finalPrice)).toFixed(2)}
+                            </div>
+                        )}
                     </div>
 
                     {/* الصور المصغرة */}
                     {product.images && product.images.length > 0 && (
-                        <div className="grid grid-cols-4 gap-2">
-                            {product.images.slice(0, 4).map((image, index) => (
+                        <div className="grid grid-cols-5 gap-2">
+                            {product.images.slice(0, 5).map((image, index) => (
                                 <button
                                     key={index}
                                     onClick={() => setSelectedImage(image)}
-                                    className={`border-2 rounded-lg overflow-hidden ${selectedImage === image ? 'border-blue-600' : 'border-transparent'
+                                    className={`card p-2 transition-all duration-300 ${selectedImage === image
+                                        ? 'ring-2 ring-[var(--accent-color)] scale-105'
+                                        : 'hover:scale-105'
                                         }`}
                                 >
                                     <img
                                         src={image}
                                         alt={`${product.title} ${index + 1}`}
-                                        className="w-full h-20 object-cover"
+                                        className="w-full h-16 object-cover rounded"
                                     />
                                 </button>
                             ))}
@@ -108,62 +143,176 @@ const ProductDetails: React.FC = () => {
                     )}
                 </div>
 
-                {/* معلومات المنتج */}
-                <div>
-                    <h1 className="text-3xl font-bold mb-2">{product.title}</h1>
-
-                    <p className="text-gray-600 mb-4">{product.description}</p>
-
-                    <div className="flex items-center mb-4">
-                        <span className="text-yellow-400 text-xl">★</span>
-                        <span className="text-lg ml-1">{product.rating}</span>
-                        <span className="text-gray-500 ml-2">({product.stock} in stock)</span>
+                {/* معلومات المنتج المحسنة */}
+                <div className="space-y-6">
+                    <div>
+                        <h1 className="text-3xl font-bold mb-2">{product.title}</h1>
+                        <div className="flex items-center space-x-4">
+                            <span className="text-sm px-3 py-1 bg-[var(--border-color)] rounded-full">
+                                SKU: {product.id}
+                            </span>
+                            <div className="flex items-center">
+                                <span className="text-yellow-400">★</span>
+                                <span className="ml-1 font-semibold">{product.rating}</span>
+                                <span className="text-[var(--text-primary)]/60 ml-1">/5</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="mb-6">
-                        <p className="text-3xl font-bold text-blue-600 mb-2">
-                            ${finalPrice}
-                        </p>
-                        {discount > 0 && (
-                            <p className="text-gray-500">
-                                Original price: <span className="line-through">${product.price}</span>
-                                <span className="text-green-600 ml-2">Save {discount}%</span>
+                    {/* علامات التبويب */}
+                    <div className="flex border-b border-[var(--border-color)]">
+                        <button
+                            onClick={() => setActiveTab('description')}
+                            className={`px-4 py-2 font-medium transition-colors relative ${activeTab === 'description'
+                                ? 'text-[var(--accent-color)]'
+                                : 'text-[var(--text-primary)]/60 hover:text-[var(--text-primary)]'
+                                }`}
+                        >
+                            Description
+                            {activeTab === 'description' && (
+                                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[var(--accent-color)]" />
+                            )}
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('details')}
+                            className={`px-4 py-2 font-medium transition-colors relative ${activeTab === 'details'
+                                ? 'text-[var(--accent-color)]'
+                                : 'text-[var(--text-primary)]/60 hover:text-[var(--text-primary)]'
+                                }`}
+                        >
+                            Product Details
+                            {activeTab === 'details' && (
+                                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[var(--accent-color)]" />
+                            )}
+                        </button>
+                    </div>
+
+                    {/* محتوى التبويبات */}
+                    <div className="min-h-[120px]">
+                        {activeTab === 'description' ? (
+                            <p className="text-[var(--text-primary)]/80 leading-relaxed">
+                                {product.description}
                             </p>
+                        ) : (
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p className="text-sm text-[var(--text-primary)]/60">Brand</p>
+                                    <p className="font-semibold">{product.brand}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-[var(--text-primary)]/60">Category</p>
+                                    <p className="font-semibold capitalize">{product.category.replace('-', ' ')}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-[var(--text-primary)]/60">Stock</p>
+                                    <p className={`font-semibold ${product.stock < 10 ? 'text-red-500' : 'text-green-500'}`}>
+                                        {product.stock} units
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-[var(--text-primary)]/60">Warranty</p>
+                                    <p className="font-semibold">12 months</p>
+                                </div>
+                            </div>
                         )}
                     </div>
 
-                    <div className="mb-6">
-                        <p className="text-gray-700">
-                            <span className="font-semibold">Brand:</span> {product.brand}
-                        </p>
-                        <p className="text-gray-700">
-                            <span className="font-semibold">Category:</span> {product.category}
-                        </p>
-                    </div>
+                    {/* السعر */}
+                    <div className="card p-6">
+                        <div className="flex items-baseline justify-between mb-4">
+                            <div>
+                                <span className="text-3xl font-bold text-[var(--accent-color)]">
+                                    ${finalPrice}
+                                </span>
+                                {discount > 0 && (
+                                    <span className="text-lg text-[var(--text-primary)]/50 line-through ml-2">
+                                        ${product.price}
+                                    </span>
+                                )}
+                            </div>
+                            {discount > 0 && (
+                                <span className="text-lg font-bold text-[var(--highlight-color)]">
+                                    {discount}% OFF
+                                </span>
+                            )}
+                        </div>
 
-                    {/* أزرار الإجراءات */}
-                    <div className="flex space-x-4">
-                        <button
-                            onClick={() => addToCart(product)}
-                            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition"
-                        >
-                            Add to Cart
-                        </button>
+                        {/* اختيار الكمية */}
+                        <div className="flex items-center space-x-4 mb-4">
+                            <span className="text-[var(--text-primary)]/60">Quantity:</span>
+                            <div className="flex items-center border border-[var(--border-color)] rounded-lg">
+                                <button
+                                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                    className="px-3 py-1 hover:bg-[var(--hover-bg)] transition"
+                                >
+                                    -
+                                </button>
+                                <span className="px-4 py-1 border-x border-[var(--border-color)]">
+                                    {quantity}
+                                </span>
+                                <button
+                                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                                    className="px-3 py-1 hover:bg-[var(--hover-bg)] transition"
+                                >
+                                    +
+                                </button>
+                            </div>
+                            <span className="text-sm text-[var(--text-primary)]/60">
+                                Max: {product.stock}
+                            </span>
+                        </div>
 
-                        <button
-                            onClick={() => toggleWishlist(product.id)}
-                            className={`p-3 rounded-lg border-2 transition ${isInWishlist
-                                ? 'border-red-500 text-red-500 hover:bg-red-50'
-                                : 'border-gray-300 text-gray-600 hover:border-red-500 hover:text-red-500'
-                                }`}
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill={isInWishlist ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        {/* أزرار الإجراءات */}
+                        <div className="flex space-x-4">
+                            <button
+                                onClick={() => {
+                                    for (let i = 0; i < quantity; i++) {
+                                        addToCart(product);
+                                    }
+                                }}
+                                disabled={product.stock === 0}
+                                className={`flex-1 bg-[var(--accent-color)] text-white font-semibold py-3 px-6 rounded-lg transition-all transform hover:scale-105 ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'
+                                    }`}
+                            >
+                                {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                            </button>
+
+                            <button
+                                onClick={() => toggleWishlist(product.id)}
+                                className={`p-3 rounded-lg border-2 transition-all transform hover:scale-110 ${isInWishlist
+                                    ? 'border-[var(--highlight-color)] text-[var(--highlight-color)] bg-[var(--highlight-color)]/10'
+                                    : 'border-[var(--border-color)] text-[var(--text-primary)] hover:border-[var(--highlight-color)] hover:text-[var(--highlight-color)]'
+                                    }`}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill={isInWishlist ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        {/* شحن مجاني */}
+                        <div className="mt-4 p-3 bg-[var(--border-color)]/30 rounded-lg flex items-center space-x-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[var(--accent-color)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
                             </svg>
-                        </button>
+                            <span className="text-sm">Free shipping on orders over $50</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            {/* منتجات مشابهة */}
+            {similarProducts.length > 0 && (
+                <section className="mt-16">
+                    <h2 className="text-2xl font-bold mb-6">Similar Products</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {similarProducts.map(product => (
+                            <ProductCard key={product.id} product={product} />
+                        ))}
+                    </div>
+                </section>
+            )}
         </div>
     );
 };

@@ -16,6 +16,26 @@ export interface Product {
     images: string[];
 }
 
+// نوع عنصر السلة
+export interface CartItem {
+    id: number;
+    title: string;
+    price: number;
+    quantity: number;
+    thumbnail: string;
+}
+
+// نوع الفئة مع صورتها
+export interface Category {
+    name: string;
+    image: string;
+    count: number;
+    icon: string;
+}
+
+// نوع الثيم
+export type ThemeMode = 'light' | 'dark';
+
 // نوع حالة التطبيق
 export interface AppState {
     products: Product[];
@@ -24,15 +44,8 @@ export interface AppState {
     error: string | null;
     cart: CartItem[];
     wishlist: number[];
-}
-
-// نوع عنصر السلة
-export interface CartItem {
-    id: number;
-    title: string;
-    price: number;
-    quantity: number;
-    thumbnail: string;
+    theme: ThemeMode;
+    categories: Category[];
 }
 
 // أنواع الأكشنز
@@ -47,7 +60,10 @@ export type Action =
     | { type: 'REMOVE_FROM_CART'; payload: number }
     | { type: 'UPDATE_CART_QUANTITY'; payload: { id: number; quantity: number } }
     | { type: 'TOGGLE_WISHLIST'; payload: number }
-    | { type: 'CLEAR_ERROR' };
+    | { type: 'CLEAR_ERROR' }
+    | { type: 'TOGGLE_THEME' }
+    | { type: 'LOAD_STATE_FROM_STORAGE'; payload: Partial<AppState> }
+    | { type: 'SET_CATEGORIES'; payload: Category[] };
 
 // نوع السياق
 export interface AppContextType {
@@ -59,4 +75,6 @@ export interface AppContextType {
     removeFromCart: (id: number) => void;
     updateCartQuantity: (id: number, quantity: number) => void;
     toggleWishlist: (id: number) => void;
+    toggleTheme: () => void;
+    getProductsByCategory: (category: string) => Product[];
 }
