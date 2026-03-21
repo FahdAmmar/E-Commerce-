@@ -34,7 +34,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 />
 
                 {/* طبقة التدرج على الصورة في Dark Mode */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                 {/* زر المفضلة */}
                 <button
@@ -43,8 +43,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                         toggleWishlist(product.id);
                     }}
                     className={`absolute top-2 right-2 p-2 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 ${isInWishlist
-                        ? 'bg-[var(--highlight-color)] text-white'
-                        : 'bg-[var(--card-bg)] text-[var(--text-primary)] hover:bg-[var(--highlight-color)] hover:text-white'
+                        ? 'bg-(--highlight-color) text-white'
+                        : 'bg-(--card-bg) text-(--text-primary) hover:bg-(--highlight-color) hover:text-white'
                         }`}
                 >
                     <svg
@@ -60,7 +60,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
                 {/* علامة الخصم */}
                 {discount > 0 && (
-                    <span className="absolute top-2 left-2 bg-[var(--highlight-color)] text-white text-xs font-bold px-2 py-1 rounded-full">
+                    <span className="absolute top-2 left-2 bg-(--highlight-color) text-white text-xs font-bold px-2 py-1 rounded-full">
                         -{discount}%
                     </span>
                 )}
@@ -76,21 +76,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <div className="p-4">
                 <h3
                     onClick={() => navigate(`/product/${product.id}`)}
-                    className="font-semibold text-lg mb-2 hover:text-[var(--accent-color)] cursor-pointer transition line-clamp-1"
+                    className="font-semibold text-lg mb-2 hover:text-(--accent-color) cursor-pointer transition line-clamp-1"
                 >
                     {product.title}
                 </h3>
 
-                <p className="text-[var(--text-primary)]/70 text-sm mb-3 line-clamp-2">
+                <p className="text-(--text-primary)/70 text-sm mb-3 line-clamp-2">
                     {product.description}
                 </p>
 
                 <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-2">
-                        <span className="text-sm text-[var(--text-primary)]/60">
+                        <span className="text-sm text-(--text-primary)/60">
                             {product.brand}
                         </span>
-                        <span className="text-xs px-2 py-1 bg-[var(--border-color)] rounded-full">
+                        <span className="text-xs px-2 py-1 bg-(--border-color) rounded-full">
                             {product.stock} left
                         </span>
                     </div>
@@ -98,11 +98,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
                 <div className="flex items-center justify-between">
                     <div>
-                        <span className="text-xl font-bold text-[var(--accent-color)]">
+                        <span className="text-xl font-bold text-(--accent-color)">
                             ${finalPrice}
                         </span>
                         {discount > 0 && (
-                            <span className="text-sm text-[var(--text-primary)]/50 line-through ml-2">
+                            <span className="text-sm text-(--text-primary)/50 line-through ml-2">
                                 ${product.price}
                             </span>
                         )}
@@ -110,7 +110,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
                     <button
                         onClick={() => addToCart(product)}
-                        className="bg-[var(--accent-color)] hover:bg-opacity-90 text-white p-2 rounded-full transition-all transform hover:scale-110 hover:rotate-12"
+                        className="bg-(--accent-color) hover:bg-opacity-90 text-white p-2 rounded-full transition-all transform hover:scale-110 hover:rotate-12"
                         title="Add to cart"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

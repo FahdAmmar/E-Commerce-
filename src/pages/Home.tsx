@@ -1,11 +1,12 @@
 // src/pages/Home.tsx
-// =================== الصفحة الرئيسية المحسنة ===================
+// =================== نسخة سريعة للإصلاح ===================
 
 import React, { useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
 import Slider from '../components/Slider';
 import ProductCard from '../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
+import type { Product } from '@/types';
 
 const Home: React.FC = () => {
     const { state, fetchProducts } = useAppContext();
@@ -15,18 +16,16 @@ const Home: React.FC = () => {
         fetchProducts();
     }, []);
 
-    // عرض حالة التحميل
     if (state.loading && state.products.length === 0) {
         return (
             <div className="container-custom py-12">
                 <div className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--accent-color)]"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-\[var\(--accent-color\)\]"></div>
                 </div>
             </div>
         );
     }
 
-    // عرض رسالة الخطأ
     if (state.error) {
         return (
             <div className="container-custom py-12">
@@ -43,24 +42,21 @@ const Home: React.FC = () => {
         );
     }
 
-    // الحصول على أول 4 فئات لعرضها
-    const featuredCategories = state.categories.slice(0, 4);
+    const featuredCategories: any[] = state.categories.slice(0, 4);
 
     return (
         <div className="container-custom py-8">
-            {/* السلايدر */}
             {state.products.length > 0 && (
                 <Slider products={state.products.slice(0, 10)} />
             )}
 
-            {/* قسم الفئات المحسن */}
             {featuredCategories.length > 0 && (
                 <section className="mt-16">
                     <div className="flex items-center justify-between mb-8">
                         <h2 className="text-2xl font-bold">Shop by Category</h2>
                         <button
                             onClick={() => navigate('/products')}
-                            className="text-[var(--accent-color)] hover:underline flex items-center"
+                            className="text-\[var\(--accent-color\)\] hover:underline flex items-center"
                         >
                             View All
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
@@ -70,9 +66,9 @@ const Home: React.FC = () => {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {featuredCategories.map((category, index) => {
-                            const categoryProducts = state.products.filter(p => p.category === category.name);
-                            const firstProduct = categoryProducts[0];
+                        {featuredCategories.map((category: any) => {
+                            const categoryProducts: any[] = state.products.filter((p: any) => p.category === category.name);
+                            const firstProduct: any = categoryProducts[0];
 
                             return (
                                 <div
@@ -80,14 +76,12 @@ const Home: React.FC = () => {
                                     onClick={() => navigate(`/products?category=${category.name}`)}
                                     className="category-card group"
                                 >
-                                    {/* صورة الفئة */}
                                     <img
                                         src={category.image}
                                         alt={category.name}
                                         className="category-card-image"
                                     />
 
-                                    {/* طبقة التدرج والمحتوى */}
                                     <div className="category-card-overlay">
                                         <div className="flex items-center mb-2">
                                             <span className="text-2xl mr-2">{category.icon}</span>
@@ -101,10 +95,9 @@ const Home: React.FC = () => {
                                                 {category.count} Products
                                             </p>
 
-                                            {/* عرض منتج مميز من الفئة */}
                                             {firstProduct && (
                                                 <div className="flex items-center space-x-1">
-                                                    <span className="text-[var(--highlight-color)] font-bold">
+                                                    <span className="text-(--highlight-color) font-bold">
                                                         ${firstProduct.price}
                                                     </span>
                                                     {firstProduct.discountPercentage > 0 && (
@@ -116,20 +109,19 @@ const Home: React.FC = () => {
                                             )}
                                         </div>
 
-                                        {/* شريط التقدم للخصومات */}
-                                        {categoryProducts.some(p => p.discountPercentage > 0) && (
+                                        {categoryProducts.some((p: any) => p.discountPercentage > 0) && (
                                             <div className="mt-3">
-                                                <div className="flex items-center text-xs text-[var(--highlight-color)]">
+                                                <div className="flex items-center text-xs text-(--highlight-color)">
                                                     <span>Up to</span>
                                                     <span className="font-bold ml-1">
-                                                        {Math.max(...categoryProducts.map(p => p.discountPercentage))}% OFF
+                                                        {Math.max(...categoryProducts.map((p: any) => p.discountPercentage))}% OFF
                                                     </span>
                                                 </div>
                                                 <div className="w-full bg-gray-700 rounded-full h-1 mt-1">
                                                     <div
-                                                        className="bg-[var(--highlight-color)] h-1 rounded-full transition-all duration-500 group-hover:w-full"
+                                                        className="bg-(--highlight-color) h-1 rounded-full transition-all duration-500 group-hover:w-full"
                                                         style={{
-                                                            width: `${Math.max(...categoryProducts.map(p => p.discountPercentage))}%`
+                                                            width: `${Math.max(...categoryProducts.map((p: any) => p.discountPercentage))}%`
                                                         }}
                                                     />
                                                 </div>
@@ -137,8 +129,7 @@ const Home: React.FC = () => {
                                         )}
                                     </div>
 
-                                    {/* تأثير Hover */}
-                                    <div className="absolute inset-0 border-2 border-transparent group-hover:border-[var(--accent-color)] rounded-xl transition-all duration-300 pointer-events-none" />
+                                    <div className="absolute inset-0 border-2 border-transparent group-hover:border-(--accent-color) rounded-xl transition-all duration-300 pointer-events-none" />
                                 </div>
                             );
                         })}
@@ -146,27 +137,25 @@ const Home: React.FC = () => {
                 </section>
             )}
 
-            {/* قسم المنتجات المميزة */}
             <section className="mt-16">
                 <h2 className="text-2xl font-bold mb-6">Featured Products</h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {state.products.slice(0, 8).map(product => (
+                    {state.products.slice(0, 8).map((product: Product) => (
                         <ProductCard key={product.id} product={product} />
                     ))}
                 </div>
             </section>
 
-            {/* قسم العروض الخاصة */}
             <section className="mt-16">
-                <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[var(--accent-color)] to-[var(--highlight-color)] p-8">
+                <div className="relative overflow-hidden rounded-xl bg-linear-to-r from-(--accent-color) to-(--highlight-color) p-8">
                     <div className="absolute inset-0 bg-black/20" />
                     <div className="relative z-10 text-white text-center">
                         <h2 className="text-3xl font-bold mb-4">Special Offers</h2>
                         <p className="text-xl mb-6">Get up to 50% off on selected items</p>
                         <button
                             onClick={() => navigate('/products')}
-                            className="bg-white text-[var(--accent-color)] px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition"
+                            className="bg-white text-(--accent-color) px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition"
                         >
                             Shop Now
                         </button>

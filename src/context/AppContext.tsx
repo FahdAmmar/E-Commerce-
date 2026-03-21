@@ -273,7 +273,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     // إعداد axios
     const api = axios.create({
-        baseURL: import.meta.env.VITE_API_BASE_URL,
+        baseURL: import.meta.env.VITE_API_BASE_URL || "https://dummyjson.com",
         timeout: Number(import.meta.env.VITE_API_TIMEOUT) || 10000,
         headers: {
             'Content-Type': 'application/json',
@@ -306,18 +306,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             });
 
             // إنشاء الفئات من المنتجات
-            const categoryMap = new Map<string, number>();
-            products.forEach((product: Product) => {
-                const count = categoryMap.get(product.category) || 0;
-                categoryMap.set(product.category, count + 1);
-            });
+            const categories: Category[] = [];
 
-            const categories: Category[] = Array.from(categoryMap.entries()).map(([name, count]) => ({
-                name,
-                count,
-                image: categoryImages[name]?.image || 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=500',
-                icon: categoryImages[name]?.icon || '📦'
-            }));
+            products.forEach((product: Product) => {
+                const existing = categories.find(c => c.name === product.category);
+
+                if (existing) {
+                    existing.count++;
+                } else {
+                    categories.push({
+                        name: product.category,
+                        count: 1,
+                        image: categoryImages[product.category]?.image || 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=500',
+                        icon: categoryImages[product.category]?.icon || '📦'
+                    });
+                }
+            });
 
             dispatch({ type: 'SET_CATEGORIES', payload: categories });
         } catch (error) {

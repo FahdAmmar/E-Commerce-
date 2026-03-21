@@ -154,7 +154,7 @@ body {
     color: #6b7280;
   }
   
-  .search-input:focus {
+  .search-input:focus{
     ring: 2px solid var(--accent-color);
     border-color: transparent;
   }

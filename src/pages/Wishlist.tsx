@@ -1,5 +1,5 @@
 // src/pages/Wishlist.tsx
-// =================== صفحة المفضلة المحسنة ===================
+// =================== نسخة سريعة للإصلاح ===================
 
 import React, { useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
@@ -15,20 +15,19 @@ const Wishlist: React.FC = () => {
         }
     }, []);
 
-    // فلترة المنتجات الموجودة في المفضلة
-    const wishlistProducts = state.products.filter(
-        product => state.wishlist.includes(product.id)
+    // استخدام any مؤقتاً
+    const wishlistProducts: any[] = state.products.filter(
+        (product: any) => state.wishlist.includes(product.id)
     );
 
     if (state.wishlist.length === 0) {
         return (
             <div className="container-custom py-12">
                 <div className="max-w-md mx-auto text-center">
-                    {/* أيقونة قلب فارغ */}
                     <div className="relative mb-6">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-24 w-24 mx-auto text-[var(--border-color)]"
+                            className="h-24 w-24 mx-auto text-(--border-color)"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -36,16 +35,15 @@ const Wishlist: React.FC = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                         </svg>
 
-                        {/* قلوب صغيرة متطايرة (تأثير decorative) */}
                         <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 animate-bounce">
-                            <svg className="h-6 w-6 text-[var(--accent-color)]/30" fill="currentColor" viewBox="0 0 24 24">
+                            <svg className="h-6 w-6 text-(--accent-color)/30" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                             </svg>
                         </div>
                     </div>
 
                     <h2 className="text-2xl font-bold mb-2">Your wishlist is empty</h2>
-                    <p className="text-[var(--text-primary)]/60 mb-6">
+                    <p className="text-(--text-primary)/60 mb-6">
                         Save your favorite items here and shop them later!
                     </p>
 
@@ -54,7 +52,7 @@ const Wishlist: React.FC = () => {
                             Browse Products
                         </Link>
 
-                        <p className="text-sm text-[var(--text-primary)]/40">
+                        <p className="text-sm text-(--text-primary)/40">
                             Click the heart icon on any product to add it to your wishlist
                         </p>
                     </div>
@@ -65,18 +63,17 @@ const Wishlist: React.FC = () => {
 
     return (
         <div className="container-custom py-8">
-            {/* رأس الصفحة */}
             <div className="flex items-center justify-between mb-8">
                 <div>
                     <h1 className="text-2xl font-bold">My Wishlist</h1>
-                    <p className="text-[var(--text-primary)]/60">
+                    <p className="text-(--text-primary)/60">
                         You have {wishlistProducts.length} saved items
                     </p>
                 </div>
 
                 <Link
                     to="/products"
-                    className="text-[var(--accent-color)] hover:underline flex items-center"
+                    className="text-(--accent-color) hover:underline flex items-center"
                 >
                     Continue Shopping
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
@@ -85,23 +82,21 @@ const Wishlist: React.FC = () => {
                 </Link>
             </div>
 
-            {/* شبكة المنتجات */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {wishlistProducts.map(product => (
+                {wishlistProducts.map((product: any) => (
                     <ProductCard key={product.id} product={product} />
                 ))}
             </div>
 
-            {/* اقتراحات بناءً على المفضلة */}
             {wishlistProducts.length > 0 && (
                 <section className="mt-16">
                     <h2 className="text-xl font-bold mb-4">You might also like</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {state.products
-                            .filter(p => !state.wishlist.includes(p.id))
-                            .filter(p => p.category === wishlistProducts[0]?.category)
+                            .filter((p: any) => !state.wishlist.includes(p.id))
+                            .filter((p: any) => p.category === wishlistProducts[0]?.category)
                             .slice(0, 4)
-                            .map(product => (
+                            .map((product: any) => (
                                 <ProductCard key={product.id} product={product} />
                             ))}
                     </div>

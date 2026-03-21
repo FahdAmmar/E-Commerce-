@@ -1,17 +1,20 @@
 // src/components/Header.tsx
-// =================== مكون الهيدر مع Dark Mode ===================
+// =================== مكون الهيدر المحسّن مع Dark Mode و Responsive ===================
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Heart, ShoppingCart, Moon, Sun, Menu, X } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 
 const Header: React.FC = () => {
     const { state, toggleTheme } = useAppContext();
     const navigate = useNavigate();
     const [isScrolled, setIsScrolled] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    // حساب عدد المنتجات في السلة
+    // حساب عدد المنتجات في السلة والمفضلة
     const cartItemsCount = state.cart.reduce((total, item) => total + item.quantity, 0);
+    const wishlistCount = state.wishlist.length;
 
     // تتبع التمرير لتغيير شكل الهيدر
     useEffect(() => {
@@ -22,75 +25,137 @@ const Header: React.FC = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // منع التمرير خلف القائمة المفتوحة
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMobileMenuOpen]);
+
+    const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
     return (
-        <header className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
-            ? 'bg-[var(--card-bg)]/95 backdrop-blur-md shadow-lg'
-            : 'bg-[var(--card-bg)] shadow-md'
-            }`}>
-            <nav className="container-custom py-4">
-                <div className="flex items-center justify-between">
-                    {/* Logo */}
-                    <Link to="/" className="text-2xl font-bold text-[var(--accent-color)]">
-                        E-Shop
-                    </Link>
-
-                    {/* روابط التنقل */}
-                    <div className="flex items-center space-x-6">
-                        <Link to="/" className="hover:text-[var(--accent-color)] transition">
-                            Home
-                        </Link>
-
-                        <Link to="/products" className="hover:text-[var(--accent-color)] transition">
-                            Products
-                        </Link>
-
-                        {/* أيقونة المفضلة */}
-                        <Link to="/wishlist" className="relative hover:text-[var(--accent-color)] transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                            </svg>
-                            {state.wishlist.length > 0 && (
-                                <span className="absolute -top-2 -right-2 bg-[var(--highlight-color)] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                                    {state.wishlist.length}
-                                </span>
-                            )}
-                        </Link>
-
-                        {/* أيقونة السلة */}
-                        <button
-                            onClick={() => navigate('/cart')}
-                            className="relative hover:text-[var(--accent-color)] transition"
+        <>
+            <header className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
+                ? 'bg-(--card-bg)/95 backdrop-blur-md shadow-lg'
+                : 'bg-(--card-bg) shadow-md'
+                }`}>
+                <nav className="container-custom py-4 px-4 md:px-6">
+                    <div className="flex items-center justify-between">
+                        {/* Logo */}
+                        <Link
+                            to="/"
+                            className="text-2xl font-bold text-(--accent-color) hover:opacity-80 transition"
+                            onClick={closeMobileMenu}
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                            {cartItemsCount > 0 && (
-                                <span className="absolute -top-2 -right-2 bg-[var(--accent-color)] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                                    {cartItemsCount}
-                                </span>
-                            )}
-                        </button>
+                            E-Shop
+                        </Link>
 
-                        {/* زر تبديل الثيم */}
-                        <button
-                            onClick={toggleTheme}
-                            className="p-2 rounded-lg hover:bg-[var(--hover-bg)] transition"
-                            aria-label="Toggle theme"
-                        >
-                            {state.theme === 'light' ? (
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                                </svg>
-                            ) : (
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                                </svg>
-                            )}
-                        </button>
+                        {/* روابط سطح المكتب (Desktop) */}
+                        <div className="hidden md:flex items-center space-x-6">
+                            <Link to="/" className="hover:text-(--accent-color) transition">
+                                Home
+                            </Link>
+                            <Link to="/products" className="hover:text-(--accent-color) transition">
+                                Products
+                            </Link>
+                        </div>
+
+                        {/* أيقونات الإجراءات (لجميع الشاشات) */}
+                        <div className="flex items-center space-x-4">
+                            {/* أيقونة المفضلة */}
+                            <button
+                                onClick={() => {
+                                    navigate('/wishlist');
+                                    closeMobileMenu();
+                                }}
+                                className="relative hover:text-(--accent-color) transition"
+                                aria-label="Wishlist"
+                            >
+                                <Heart className="h-6 w-6" />
+                                {wishlistCount > 0 && (
+                                    <span className="absolute -top-2 -right-2 bg-(--highlight-color) text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                        {wishlistCount}
+                                    </span>
+                                )}
+                            </button>
+
+                            {/* أيقونة السلة */}
+                            <button
+                                onClick={() => {
+                                    navigate('/cart');
+                                    closeMobileMenu();
+                                }}
+                                className="relative hover:text-(--accent-color) transition"
+                                aria-label="Cart"
+                            >
+                                <ShoppingCart className="h-6 w-6" />
+                                {cartItemsCount > 0 && (
+                                    <span className="absolute -top-2 -right-2 bg-(--accent-color) text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                        {cartItemsCount}
+                                    </span>
+                                )}
+                            </button>
+
+                            {/* زر تبديل الثيم */}
+                            <button
+                                onClick={toggleTheme}
+                                className="p-2 rounded-lg hover:bg-(--hover-bg) transition"
+                                aria-label="Toggle theme"
+                            >
+                                {state.theme === 'light' ? (
+                                    <Moon className="h-5 w-5" />
+                                ) : (
+                                    <Sun className="h-5 w-5" />
+                                )}
+                            </button>
+
+                            {/* زر القائمة للهواتف */}
+                            <button
+                                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                className="md:hidden p-2 rounded-lg hover:bg-(--hover-bg) transition"
+                                aria-label="Menu"
+                            >
+                                {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                            </button>
+                        </div>
                     </div>
+                </nav>
+            </header>
+
+            {/* القائمة الجانبية للهواتف */}
+            <div
+                className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 md:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+                    }`}
+                onClick={closeMobileMenu}
+            />
+            <div
+                className={`fixed top-0 right-0 h-full w-64 z-50 bg-(--card-bg) shadow-xl transform transition-transform duration-300 ease-in-out md:hidden ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+                    }`}
+            >
+                <div className="flex flex-col p-6 space-y-4 mt-16">
+                    <Link
+                        to="/"
+                        className="text-lg font-medium hover:text-(--accent-color) transition py-2"
+                        onClick={closeMobileMenu}
+                    >
+                        Home
+                    </Link>
+                    <Link
+                        to="/products"
+                        className="text-lg font-medium hover:text-(--accent-color) transition py-2"
+                        onClick={closeMobileMenu}
+                    >
+                        Products
+                    </Link>
                 </div>
-            </nav>
-        </header>
+            </div>
+        </>
     );
 };
 

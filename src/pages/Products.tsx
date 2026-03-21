@@ -1,5 +1,5 @@
 // src/pages/Products.tsx
-// =================== صفحة جميع المنتجات المحسنة ===================
+// =================== نسخة سريعة للإصلاح ===================
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { useAppContext } from '../context/AppContext';
@@ -22,7 +22,6 @@ const Products: React.FC = () => {
         fetchProducts();
     }, []);
 
-    // تحديث URL عند تغيير الفئة
     useEffect(() => {
         if (selectedCategory === 'all') {
             searchParams.delete('category');
@@ -32,15 +31,14 @@ const Products: React.FC = () => {
         setSearchParams(searchParams);
     }, [selectedCategory]);
 
-    // حساب المدى الأقصى للأسعار
     const maxPrice = useMemo(() => {
         if (state.products.length === 0) return 2000;
-        return Math.max(...state.products.map(p => p.price));
+        return Math.max(...state.products.map((p: any) => p.price));
     }, [state.products]);
 
-    // فلترة وترتيب المنتجات
-    const filteredAndSortedProducts = useMemo(() => {
-        let filtered = state.products.filter(product => {
+    // استخدام any مؤقتاً لحل المشكلة
+    const filteredAndSortedProducts = useMemo((): any[] => {
+        const filtered = state.products.filter((product: any) => {
             const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 product.description.toLowerCase().includes(searchTerm.toLowerCase());
             const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
@@ -49,22 +47,20 @@ const Products: React.FC = () => {
             return matchesSearch && matchesCategory && matchesPrice;
         });
 
-        // ترتيب المنتجات
         switch (sortBy) {
             case 'price-asc':
-                filtered.sort((a, b) => a.price - b.price);
+                filtered.sort((a: any, b: any) => a.price - b.price);
                 break;
             case 'price-desc':
-                filtered.sort((a, b) => b.price - a.price);
+                filtered.sort((a: any, b: any) => b.price - a.price);
                 break;
             case 'rating-desc':
-                filtered.sort((a, b) => b.rating - a.rating);
+                filtered.sort((a: any, b: any) => b.rating - a.rating);
                 break;
             case 'discount-desc':
-                filtered.sort((a, b) => b.discountPercentage - a.discountPercentage);
+                filtered.sort((a: any, b: any) => b.discountPercentage - a.discountPercentage);
                 break;
             default:
-                // الترتيب الافتراضي
                 break;
         }
 
@@ -75,9 +71,7 @@ const Products: React.FC = () => {
         <div className="container-custom py-8">
             <h1 className="text-2xl font-bold mb-6">All Products</h1>
 
-            {/* شريط البحث والفلاتر */}
             <div className="mb-8 space-y-4">
-                {/* شريط البحث وزر الفلاتر */}
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-1 relative">
                         <input
@@ -109,23 +103,20 @@ const Products: React.FC = () => {
                     </button>
                 </div>
 
-                {/* الفلاتر المتقدمة */}
                 <div className={`${showFilters ? 'block' : 'hidden md:block'} space-y-4 md:space-y-0 md:flex md:gap-4`}>
-                    {/* قائمة الفئات المحسنة */}
                     <select
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
                         className="custom-select flex-1"
                     >
                         <option value="all">🏷️ All Categories</option>
-                        {state.categories.map(category => (
+                        {state.categories.map((category: any) => (
                             <option key={category.name} value={category.name}>
                                 {category.icon} {category.name.replace('-', ' ')} ({category.count})
                             </option>
                         ))}
                     </select>
 
-                    {/* قائمة الترتيب المحسنة */}
                     <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value as SortOption)}
@@ -138,9 +129,8 @@ const Products: React.FC = () => {
                         <option value="discount-desc">🏷️ Biggest Discounts</option>
                     </select>
 
-                    {/* مدى السعر المحسن */}
                     <div className="flex-1 flex items-center space-x-4">
-                        <span className="text-sm text-[var(--text-primary)] whitespace-nowrap">
+                        <span className="text-sm text-\[var\(--text-primary\)\] whitespace-nowrap">
                             ${priceRange[0]} - ${priceRange[1]}
                         </span>
                         <input
@@ -149,33 +139,31 @@ const Products: React.FC = () => {
                             max={maxPrice}
                             value={priceRange[1]}
                             onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
-                            className="flex-1 accent-[var(--accent-color)]"
+                            className="flex-1 accent-\[var\(--accent-color\)\]"
                         />
                     </div>
                 </div>
             </div>
 
-            {/* عرض المنتجات */}
             {state.loading && state.products.length === 0 ? (
                 <div className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--accent-color)]"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-\[var\(--accent-color\)\]"></div>
                 </div>
             ) : (
                 <>
                     <div className="flex justify-between items-center mb-4">
-                        <p className="text-[var(--text-primary)]">
-                            Found <span className="font-bold text-[var(--accent-color)]">{filteredAndSortedProducts.length}</span> products
+                        <p className="text-[var\(\--text-primary\)\]">
+                            Found <span className="font-bold text-\[var\(--accent-color\)\]">{filteredAndSortedProducts.length}</span> products
                         </p>
 
-                        {/* معلومات الفئة المحددة */}
                         {selectedCategory !== 'all' && (
                             <div className="flex items-center space-x-2">
-                                <span className="text-sm bg-[var(--accent-color)]/10 text-[var(--accent-color)] px-3 py-1 rounded-full">
-                                    {state.categories.find(c => c.name === selectedCategory)?.icon} {selectedCategory.replace('-', ' ')}
+                                <span className="text-sm bg-\[var\(--accent-color\)\]/10 text-\[var\(--accent-color\)\] px-3 py-1 rounded-full">
+                                    {state.categories.find((c: any) => c.name === selectedCategory)?.icon} {selectedCategory.replace('-', ' ')}
                                 </span>
                                 <button
                                     onClick={() => setSelectedCategory('all')}
-                                    className="text-sm text-[var(--text-primary)] hover:text-[var(--accent-color)]"
+                                    className="text-sm text-\[var\(--text-primary\)\] hover:text-\[var\(--accent-color\)\]"
                                 >
                                     ✕ Clear
                                 </button>
@@ -204,7 +192,7 @@ const Products: React.FC = () => {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                            {filteredAndSortedProducts.map(product => (
+                            {filteredAndSortedProducts.map((product: any) => (
                                 <ProductCard key={product.id} product={product} />
                             ))}
                         </div>
