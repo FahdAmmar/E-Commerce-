@@ -6,7 +6,7 @@ import { useAppContext } from '../context/AppContext';
 import Slider from '../components/Slider';
 import ProductCard from '../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
-import type { Product } from '@/types';
+import type { Product } from '@/types/index';
 
 const Home: React.FC = () => {
     const { state, fetchProducts } = useAppContext();

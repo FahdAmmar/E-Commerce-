@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import ProductCard from '../components/ProductCard';
+import type { Product } from '../types/index';
 
 const ProductDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -66,7 +67,7 @@ const ProductDetails: React.FC = () => {
 
     // منتجات مشابهة من نفس الفئة
     const similarProducts = getProductsByCategory(product.category)
-        .filter(p => p.id !== product.id)
+        .filter((p: Product) => p.id !== product.id)
         .slice(0, 4);
 
     return (
@@ -123,7 +124,7 @@ const ProductDetails: React.FC = () => {
                     {/* الصور المصغرة */}
                     {product.images && product.images.length > 0 && (
                         <div className="grid grid-cols-5 gap-2">
-                            {product.images.slice(0, 5).map((image, index) => (
+                            {product.images.slice(0, 5).map((image: string, index: number) => (
                                 <button
                                     key={index}
                                     onClick={() => setSelectedImage(image)}
@@ -307,7 +308,7 @@ const ProductDetails: React.FC = () => {
                 <section className="mt-16">
                     <h2 className="text-2xl font-bold mb-6">Similar Products</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {similarProducts.map(product => (
+                        {similarProducts.map((product: Product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}
                     </div>

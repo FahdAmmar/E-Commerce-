@@ -13,7 +13,7 @@ const Header: React.FC = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     // حساب عدد المنتجات في السلة والمفضلة
-    const cartItemsCount: number = state.cart.reduce((total, item) => total + item.quantity, 0);
+    const cartItemsCount: number = state.cart.reduce((total: number, item: { quantity: number }) => total + item.quantity, 0);
     const wishlistCount: number = state.wishlist.length;
 
     // تتبع التمرير لتغيير شكل الهيدر
