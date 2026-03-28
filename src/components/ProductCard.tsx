@@ -15,7 +15,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     const { state, addToCart, toggleWishlist } = useAppContext();
 
     const isInWishlist = state.wishlist.includes(product.id);
-    const discount = product.discountPercentage;
+    const discount = product.discountPercentage ?? 0;
     const finalPrice = discount > 0
         ? (product.price * (1 - discount / 100)).toFixed(2)
         : product.price;

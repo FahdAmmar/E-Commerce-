@@ -55,7 +55,7 @@ const Slider: React.FC<SliderProps> = ({ products }) => {
     const currentProduct = products[currentIndex];
 
     return (
-        <div className="relative h-[500px] md:h-[600px] overflow-hidden rounded-2xl mb-8 group">
+        <div className="relative h-125 md:h-150 overflow-hidden rounded-2xl mb-8 group">
             {/* خلفية الصورة مع تأثير التدرج */}
             <div
                 className="absolute inset-0 bg-cover bg-center transition-all duration-1000 scale-105 group-hover:scale-110"
@@ -101,10 +101,10 @@ const Slider: React.FC<SliderProps> = ({ products }) => {
                         </div>
 
                         <div className="flex items-center space-x-6 mb-8">
-                            <span className="text-4xl font-bold text-[var(--highlight-color)]">
-                                ${(currentProduct.price * (1 - currentProduct.discountPercentage / 100)).toFixed(2)}
+                            <span className="text-4xl font-bold text-(--highlight-color)">
+                                ${(currentProduct.price * (1 - (currentProduct.discountPercentage ?? 0) / 100)).toFixed(2)}
                             </span>
-                            {currentProduct.discountPercentage > 0 && (
+                            {(currentProduct.discountPercentage ?? 0) > 0 && (
                                 <div className="flex items-center space-x-2">
                                     <span className="text-lg line-through text-gray-400">
                                         ${currentProduct.price}

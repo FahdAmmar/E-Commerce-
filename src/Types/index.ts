@@ -1,22 +1,19 @@
-// src/Types/index.ts
-// =================== تعريف أنواع البيانات ===================
+// src/types/index.ts
 
-// نوع المنتج
 export interface Product {
     id: number;
     title: string;
     description: string;
     price: number;
-    discountPercentage: number;
-    rating: number;
-    stock: number;
-    brand: string;
+    discountPercentage?: number;
+    rating?: number;
+    stock?: number;
+    brand?: string;
     category: string;
     thumbnail: string;
-    images: string[];
+    images?: string[];
 }
 
-// نوع عنصر السلة
 export interface CartItem {
     id: number;
     title: string;
@@ -25,18 +22,13 @@ export interface CartItem {
     thumbnail: string;
 }
 
-// نوع الفئة مع صورتها
 export interface Category {
     name: string;
-    image: string;
     count: number;
+    image: string;
     icon: string;
 }
 
-// نوع الثيم
-export type ThemeMode = 'light' | 'dark';
-
-// نوع حالة التطبيق
 export interface AppState {
     products: Product[];
     currentProduct: Product | null;
@@ -44,11 +36,10 @@ export interface AppState {
     error: string | null;
     cart: CartItem[];
     wishlist: number[];
-    theme: ThemeMode;
+    theme: 'light' | 'dark';
     categories: Category[];
 }
 
-// أنواع الأكشنز
 export type Action =
     | { type: 'FETCH_PRODUCTS_START' }
     | { type: 'FETCH_PRODUCTS_SUCCESS'; payload: Product[] }
@@ -60,12 +51,11 @@ export type Action =
     | { type: 'REMOVE_FROM_CART'; payload: number }
     | { type: 'UPDATE_CART_QUANTITY'; payload: { id: number; quantity: number } }
     | { type: 'TOGGLE_WISHLIST'; payload: number }
-    | { type: 'CLEAR_ERROR' }
     | { type: 'TOGGLE_THEME' }
+    | { type: 'SET_CATEGORIES'; payload: Category[] }
     | { type: 'LOAD_STATE_FROM_STORAGE'; payload: Partial<AppState> }
-    | { type: 'SET_CATEGORIES'; payload: Category[] };
+    | { type: 'CLEAR_ERROR' };
 
-// نوع السياق
 export interface AppContextType {
     state: AppState;
     dispatch: React.Dispatch<Action>;

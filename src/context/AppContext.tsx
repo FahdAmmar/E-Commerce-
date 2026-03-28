@@ -160,12 +160,12 @@ const appReducer = (state: AppState, action: Action): AppState => {
             break;
 
         case 'ADD_TO_CART': {
-            const existingItem = state.cart.find(item => item.id === action.payload.id);
+            const existingItem = state.cart.find((item: CartItem) => item.id === action.payload.id);
 
             if (existingItem) {
                 newState = {
                     ...state,
-                    cart: state.cart.map(item =>
+                    cart: state.cart.map((item: CartItem) =>
                         item.id === action.payload.id
                             ? { ...item, quantity: item.quantity + 1 }
                             : item
@@ -190,18 +190,18 @@ const appReducer = (state: AppState, action: Action): AppState => {
         case 'REMOVE_FROM_CART':
             newState = {
                 ...state,
-                cart: state.cart.filter(item => item.id !== action.payload),
+                cart: state.cart.filter((item: CartItem) => item.id !== action.payload),
             };
             break;
 
         case 'UPDATE_CART_QUANTITY':
             newState = {
                 ...state,
-                cart: state.cart.map(item =>
+                cart: state.cart.map((item: CartItem) =>
                     item.id === action.payload.id
                         ? { ...item, quantity: action.payload.quantity }
                         : item
-                ).filter(item => item.quantity > 0),
+                ).filter((item: CartItem) => item.quantity > 0),
             };
             break;
 
@@ -210,7 +210,7 @@ const appReducer = (state: AppState, action: Action): AppState => {
             newState = {
                 ...state,
                 wishlist: isInWishlist
-                    ? state.wishlist.filter(id => id !== action.payload)
+                    ? state.wishlist.filter((id: number) => id !== action.payload)
                     : [...state.wishlist, action.payload],
             };
             break;
@@ -298,7 +298,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             dispatch({ type: 'FETCH_PRODUCTS_START' });
 
             const response = await api.get('/products');
-            const products = response.data.products;
+            const products: Product[] = response.data.products;
 
             dispatch({
                 type: 'FETCH_PRODUCTS_SUCCESS',
@@ -309,7 +309,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             const categories: Category[] = [];
 
             products.forEach((product: Product) => {
-                const existing = categories.find(c => c.name === product.category);
+                const existing = categories.find((c: Category) => c.name === product.category);
 
                 if (existing) {
                     existing.count++;
@@ -390,7 +390,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     // جلب المنتجات حسب الفئة
     const getProductsByCategory = (category: string) => {
-        return state.products.filter(product => product.category === category);
+        return state.products.filter((product: Product) => product.category === category);
     };
 
     const contextValue: AppContextType = {

@@ -61,7 +61,7 @@ const ProductDetails: React.FC = () => {
     }
 
     const isInWishlist = state.wishlist.includes(product.id);
-    const discount = product.discountPercentage;
+    const discount = product.discountPercentage ?? 0;
     const finalPrice = (product.price * (1 - discount / 100)).toFixed(2);
 
     // منتجات مشابهة من نفس الفئة
@@ -205,8 +205,8 @@ const ProductDetails: React.FC = () => {
                                 </div>
                                 <div>
                                     <p className="text-sm text-(--text-primary)/60">Stock</p>
-                                    <p className={`font-semibold ${product.stock < 10 ? 'text-red-500' : 'text-green-500'}`}>
-                                        {product.stock} units
+                                    <p className={`font-semibold ${(product.stock ?? 0) < 10 ? 'text-red-500' : 'text-green-500'}`}>
+                                        {product.stock ?? 0} units
                                     </p>
                                 </div>
                                 <div>
@@ -251,14 +251,14 @@ const ProductDetails: React.FC = () => {
                                     {quantity}
                                 </span>
                                 <button
-                                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                                    onClick={() => setQuantity(Math.min(product.stock ?? 0, quantity + 1))}
                                     className="px-3 py-1 hover:bg-(--hover-bg) transition"
                                 >
                                     +
                                 </button>
                             </div>
                             <span className="text-sm text-(--text-primary)/60">
-                                Max: {product.stock}
+                                Max: {product.stock ?? 0}
                             </span>
                         </div>
 
@@ -270,11 +270,11 @@ const ProductDetails: React.FC = () => {
                                         addToCart(product);
                                     }
                                 }}
-                                disabled={product.stock === 0}
-                                className={`flex-1 bg-(--accent-color) text-white font-semibold py-3 px-6 rounded-lg transition-all transform hover:scale-105 ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'
+                                disabled={(product.stock ?? 0) === 0}
+                                className={`flex-1 bg-(--accent-color) text-white font-semibold py-3 px-6 rounded-lg transition-all transform hover:scale-105 ${(product.stock ?? 0) === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-opacity-90'
                                     }`}
                             >
-                                {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                                {(product.stock ?? 0) === 0 ? 'Out of Stock' : 'Add to Cart'}
                             </button>
 
                             <button
