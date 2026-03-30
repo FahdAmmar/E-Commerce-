@@ -14,7 +14,7 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         fetchProducts();
-    }, []);
+    }, [fetchProducts]);
 
     if (state.loading && state.products.length === 0) {
         return (
@@ -42,7 +42,7 @@ const Home: React.FC = () => {
         );
     }
 
-    const featuredCategories: any[] = state.categories.slice(0, 4);
+    const featuredCategories = state.categories.slice(0, 4);
 
     return (
         <div className="container-custom py-8">
@@ -66,9 +66,9 @@ const Home: React.FC = () => {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {featuredCategories.map((category: any) => {
-                            const categoryProducts: any[] = state.products.filter((p: any) => p.category === category.name);
-                            const firstProduct: any = categoryProducts[0];
+                        {featuredCategories.map((category) => {
+                            const categoryProducts = state.products.filter((p) => p.category === category.name);
+                            const firstProduct = categoryProducts[0];
 
                             return (
                                 <div
@@ -100,7 +100,7 @@ const Home: React.FC = () => {
                                                     <span className="text-(--highlight-color) font-bold">
                                                         ${firstProduct.price}
                                                     </span>
-                                                    {firstProduct.discountPercentage > 0 && (
+                                                    {(firstProduct.discountPercentage ?? 0) > 0 && (
                                                         <span className="text-xs line-through text-gray-400">
                                                             ${firstProduct.price}
                                                         </span>
@@ -109,19 +109,19 @@ const Home: React.FC = () => {
                                             )}
                                         </div>
 
-                                        {categoryProducts.some((p: any) => p.discountPercentage > 0) && (
+                                        {categoryProducts.some((p) => (p.discountPercentage ?? 0) > 0) && (
                                             <div className="mt-3">
                                                 <div className="flex items-center text-xs text-(--highlight-color)">
                                                     <span>Up to</span>
                                                     <span className="font-bold ml-1">
-                                                        {Math.max(...categoryProducts.map((p: any) => p.discountPercentage))}% OFF
+                                                        {Math.max(...categoryProducts.map((p) => p.discountPercentage ?? 0))}% OFF
                                                     </span>
                                                 </div>
                                                 <div className="w-full bg-gray-700 rounded-full h-1 mt-1">
                                                     <div
                                                         className="bg-(--highlight-color) h-1 rounded-full transition-all duration-500 group-hover:w-full"
                                                         style={{
-                                                            width: `${Math.max(...categoryProducts.map((p: any) => p.discountPercentage))}%`
+                                                            width: `${Math.max(...categoryProducts.map((p) => p.discountPercentage ?? 0))}%`
                                                         }}
                                                     />
                                                 </div>

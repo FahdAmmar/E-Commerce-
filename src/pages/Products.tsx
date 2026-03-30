@@ -20,7 +20,7 @@ const Products: React.FC = () => {
 
     useEffect(() => {
         fetchProducts();
-    }, []);
+    }, [fetchProducts]);
 
     useEffect(() => {
         if (selectedCategory === 'all') {
@@ -29,16 +29,16 @@ const Products: React.FC = () => {
             searchParams.set('category', selectedCategory);
         }
         setSearchParams(searchParams);
-    }, [selectedCategory]);
+    }, [selectedCategory, searchParams, setSearchParams]);
 
     const maxPrice = useMemo(() => {
         if (state.products.length === 0) return 2000;
-        return Math.max(...state.products.map((p: any) => p.price));
+        return Math.max(...state.products.map((p) => p.price));
     }, [state.products]);
 
     // استخدام any مؤقتاً لحل المشكلة
-    const filteredAndSortedProducts = useMemo((): any[] => {
-        const filtered = state.products.filter((product: any) => {
+    const filteredAndSortedProducts = useMemo(() => {
+        const filtered = state.products.filter((product) => {
             const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 product.description.toLowerCase().includes(searchTerm.toLowerCase());
             const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
@@ -49,16 +49,16 @@ const Products: React.FC = () => {
 
         switch (sortBy) {
             case 'price-asc':
-                filtered.sort((a: any, b: any) => a.price - b.price);
+                filtered.sort((a, b) => a.price - b.price);
                 break;
             case 'price-desc':
-                filtered.sort((a: any, b: any) => b.price - a.price);
+                filtered.sort((a, b) => b.price - a.price);
                 break;
             case 'rating-desc':
-                filtered.sort((a: any, b: any) => b.rating - a.rating);
+                filtered.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
                 break;
             case 'discount-desc':
-                filtered.sort((a: any, b: any) => b.discountPercentage - a.discountPercentage);
+                filtered.sort((a, b) => (b.discountPercentage ?? 0) - (a.discountPercentage ?? 0));
                 break;
             default:
                 break;
@@ -110,7 +110,7 @@ const Products: React.FC = () => {
                         className="custom-select flex-1"
                     >
                         <option value="all">🏷️ All Categories</option>
-                        {state.categories.map((category: any) => (
+                        {state.categories.map((category) => (
                             <option key={category.name} value={category.name}>
                                 {category.icon} {category.name.replace('-', ' ')} ({category.count})
                             </option>
@@ -159,7 +159,7 @@ const Products: React.FC = () => {
                         {selectedCategory !== 'all' && (
                             <div className="flex items-center space-x-2">
                                 <span className="text-sm bg-\[var\(--accent-color\)\]/10 text-\[var\(--accent-color\)\] px-3 py-1 rounded-full">
-                                    {state.categories.find((c: any) => c.name === selectedCategory)?.icon} {selectedCategory.replace('-', ' ')}
+                                    {state.categories.find((c) => c.name === selectedCategory)?.icon} {selectedCategory.replace('-', ' ')}
                                 </span>
                                 <button
                                     onClick={() => setSelectedCategory('all')}
@@ -192,7 +192,7 @@ const Products: React.FC = () => {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                            {filteredAndSortedProducts.map((product: any) => (
+                            {filteredAndSortedProducts.map((product) => (
                                 <ProductCard key={product.id} product={product} />
                             ))}
                         </div>

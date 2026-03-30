@@ -14,12 +14,10 @@ export interface Product {
     images?: string[];
 }
 
-export interface CartItem {
-    id: number;
-    title: string;
-    price: number;
+export interface CartItem extends Product {
+  
     quantity: number;
-    thumbnail: string;
+    
 }
 
 export interface Category {

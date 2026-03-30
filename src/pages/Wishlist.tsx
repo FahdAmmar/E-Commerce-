@@ -13,11 +13,11 @@ const Wishlist: React.FC = () => {
         if (state.products.length === 0) {
             fetchProducts();
         }
-    }, []);
+    }, [fetchProducts, state.products.length]);
 
     // استخدام any مؤقتاً
-    const wishlistProducts: any[] = state.products.filter(
-        (product: any) => state.wishlist.includes(product.id)
+    const wishlistProducts = state.products.filter(
+        (product) => state.wishlist.includes(product.id)
     );
 
     if (state.wishlist.length === 0) {
@@ -83,7 +83,7 @@ const Wishlist: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {wishlistProducts.map((product: any) => (
+                {wishlistProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
                 ))}
             </div>
@@ -93,10 +93,10 @@ const Wishlist: React.FC = () => {
                     <h2 className="text-xl font-bold mb-4">You might also like</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {state.products
-                            .filter((p: any) => !state.wishlist.includes(p.id))
-                            .filter((p: any) => p.category === wishlistProducts[0]?.category)
+                            .filter((p) => !state.wishlist.includes(p.id))
+                            .filter((p) => p.category === wishlistProducts[0]?.category)
                             .slice(0, 4)
-                            .map((product: any) => (
+                            .map((product) => (
                                 <ProductCard key={product.id} product={product} />
                             ))}
                     </div>

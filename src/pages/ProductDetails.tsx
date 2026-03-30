@@ -20,13 +20,9 @@ const ProductDetails: React.FC = () => {
             fetchProductById(parseInt(id));
             window.scrollTo(0, 0);
         }
-    }, [id]);
+    }, [id, fetchProductById]);
 
-    useEffect(() => {
-        if (state.currentProduct) {
-            setSelectedImage(state.currentProduct.thumbnail);
-        }
-    }, [state.currentProduct]);
+    const currentImage = state.currentProduct?.thumbnail || selectedImage;
 
     // عرض حالة التحميل
     if (state.loading) {
@@ -98,14 +94,14 @@ const ProductDetails: React.FC = () => {
                     {/* الصورة الرئيسية مع تأثيرات */}
                     <div className="relative card p-4 group">
                         <img
-                            src={selectedImage}
+                            src={currentImage}
                             alt={product.title}
                             className="w-full h-96 object-contain product-image"
                         />
 
                         {/* أيقونة التكبير */}
                         <button
-                            onClick={() => window.open(selectedImage, '_blank')}
+                            onClick={() => window.open(currentImage, '_blank')}
                             className="absolute bottom-4 right-4 bg-(--card-bg)/90 backdrop-blur p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -128,7 +124,7 @@ const ProductDetails: React.FC = () => {
                                 <button
                                     key={index}
                                     onClick={() => setSelectedImage(image)}
-                                    className={`card p-2 transition-all duration-300 ${selectedImage === image
+                                    className={`card p-2 transition-all duration-300 ${currentImage === image
                                         ? 'ring-2 ring-(--accent-color) scale-105'
                                         : 'hover:scale-105'
                                         }`}

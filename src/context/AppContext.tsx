@@ -1,7 +1,7 @@
 // src/context/AppContext.tsx
 // =================== إدارة الحالة مع localStorage و Dark Mode ===================
 
-import React, { createContext, useContext, useReducer, type ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useCallback, type ReactNode, useEffect } from 'react';
 import type { AppState, Action, AppContextType, Product, CartItem, Category } from '../types/index';
 import axios from 'axios';
 
@@ -175,9 +175,11 @@ const appReducer = (state: AppState, action: Action): AppState => {
                 const newCartItem: CartItem = {
                     id: action.payload.id,
                     title: action.payload.title,
+                    description: action.payload.description || '',
                     price: action.payload.price,
-                    quantity: 1,
                     thumbnail: action.payload.thumbnail,
+                    category: action.payload.category || '',
+                    quantity: 1,
                 };
                 newState = {
                     ...state,
@@ -262,6 +264,15 @@ const appReducer = (state: AppState, action: Action): AppState => {
     return newState;
 };
 
+// إعداد axios (خارج المكون لتجنب إعادة الإنشاء)
+const api = axios.create({
+    baseURL: import.meta.env.VITE_API_BASE_URL || "https://dummyjson.com",
+    timeout: Number(import.meta.env.VITE_API_TIMEOUT) || 10000,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
 // مزود السياق (Provider)
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     // تحميل الحالة المحفوظة
@@ -269,15 +280,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [state, dispatch] = useReducer(appReducer, {
         ...initialState,
         ...savedState,
-    });
-
-    // إعداد axios
-    const api = axios.create({
-        baseURL: import.meta.env.VITE_API_BASE_URL || "https://dummyjson.com",
-        timeout: Number(import.meta.env.VITE_API_TIMEOUT) || 10000,
-        headers: {
-            'Content-Type': 'application/json',
-        },
     });
 
     // تطبيق الثيم على عنصر html
@@ -293,7 +295,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }, [state.theme]);
 
     // جلب جميع المنتجات
-    const fetchProducts = async () => {
+    const fetchProducts = useCallback(async () => {
         try {
             dispatch({ type: 'FETCH_PRODUCTS_START' });
 
@@ -336,10 +338,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 payload: errorMessage
             });
         }
-    };
+    }, []);
 
     // جلب منتج محدد
-    const fetchProductById = async (id: number) => {
+    const fetchProductById = useCallback(async (id: number) => {
         try {
             dispatch({ type: 'FETCH_PRODUCT_START' });
 
@@ -361,7 +363,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 payload: errorMessage
             });
         }
-    };
+    }, []);
 
     // إضافة إلى السلة
     const addToCart = (product: Product) => {
@@ -414,6 +416,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 };
 
 // Hook مخصص لاستخدام السياق
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAppContext = () => {
     const context = useContext(AppContext);
 
