@@ -5,6 +5,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useAppContext } from '../context/AppContext';
 import ProductCard from '../components/ProductCard';
 import { useSearchParams } from 'react-router-dom';
+import type { Product, Category } from '../types/index';
 
 type SortOption = 'default' | 'price-asc' | 'price-desc' | 'rating-desc' | 'discount-desc';
 
@@ -49,16 +50,16 @@ const Products: React.FC = () => {
 
         switch (sortBy) {
             case 'price-asc':
-                filtered.sort((a, b) => a.price - b.price);
+                filtered.sort((a: Product, b: Product) => a.price - b.price);
                 break;
             case 'price-desc':
-                filtered.sort((a, b) => b.price - a.price);
+                filtered.sort((a: Product, b: Product) => b.price - a.price);
                 break;
             case 'rating-desc':
-                filtered.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+                filtered.sort((a: Product, b: Product) => (b.rating ?? 0) - (a.rating ?? 0));
                 break;
             case 'discount-desc':
-                filtered.sort((a, b) => (b.discountPercentage ?? 0) - (a.discountPercentage ?? 0));
+                filtered.sort((a: Product, b: Product) => (b.discountPercentage ?? 0) - (a.discountPercentage ?? 0));
                 break;
             default:
                 break;
@@ -110,7 +111,7 @@ const Products: React.FC = () => {
                         className="custom-select flex-1"
                     >
                         <option value="all">🏷️ All Categories</option>
-                        {state.categories.map((category) => (
+                        {state.categories.map((category: Category) => (
                             <option key={category.name} value={category.name}>
                                 {category.icon} {category.name.replace('-', ' ')} ({category.count})
                             </option>
@@ -159,7 +160,7 @@ const Products: React.FC = () => {
                         {selectedCategory !== 'all' && (
                             <div className="flex items-center space-x-2">
                                 <span className="text-sm bg-\[var\(--accent-color\)\]/10 text-\[var\(--accent-color\)\] px-3 py-1 rounded-full">
-                                    {state.categories.find((c) => c.name === selectedCategory)?.icon} {selectedCategory.replace('-', ' ')}
+                                    {state.categories.find((c: Category) => c.name === selectedCategory)?.icon} {selectedCategory.replace('-', ' ')}
                                 </span>
                                 <button
                                     onClick={() => setSelectedCategory('all')}
@@ -192,7 +193,7 @@ const Products: React.FC = () => {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                            {filteredAndSortedProducts.map((product) => (
+                            {filteredAndSortedProducts.map((product: Product) => (
                                 <ProductCard key={product.id} product={product} />
                             ))}
                         </div>

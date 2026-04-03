@@ -5,6 +5,7 @@ import React, { useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
 import ProductCard from '../components/ProductCard';
 import { Link } from 'react-router-dom';
+import type { Product } from '../types/index';
 
 const Wishlist: React.FC = () => {
     const { state, fetchProducts } = useAppContext();
@@ -17,7 +18,7 @@ const Wishlist: React.FC = () => {
 
     // استخدام any مؤقتاً
     const wishlistProducts = state.products.filter(
-        (product) => state.wishlist.includes(product.id)
+        (product: Product) => state.wishlist.includes(product.id)
     );
 
     if (state.wishlist.length === 0) {
@@ -83,7 +84,7 @@ const Wishlist: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {wishlistProducts.map((product) => (
+                {wishlistProducts.map((product: Product) => (
                     <ProductCard key={product.id} product={product} />
                 ))}
             </div>
@@ -93,10 +94,10 @@ const Wishlist: React.FC = () => {
                     <h2 className="text-xl font-bold mb-4">You might also like</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {state.products
-                            .filter((p) => !state.wishlist.includes(p.id))
-                            .filter((p) => p.category === wishlistProducts[0]?.category)
+                            .filter((p: Product) => !state.wishlist.includes(p.id))
+                            .filter((p: Product) => p.category === wishlistProducts[0]?.category)
                             .slice(0, 4)
-                            .map((product) => (
+                            .map((product: Product) => (
                                 <ProductCard key={product.id} product={product} />
                             ))}
                     </div>
