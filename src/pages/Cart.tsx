@@ -5,8 +5,27 @@ import React, { useState, useCallback, memo } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { Link } from 'react-router-dom';
 import { X, ArrowLeft, Truck, Heart, Minus, Plus, Sparkles, ShoppingBag, Shield, CreditCard } from 'lucide-react';
-import type { CartItem } from '../types/index';
 
+
+export interface Product {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  discountPercentage?: number;
+  rating?: number;
+  stock?: number;
+  brand?: string;
+  category: string;
+  thumbnail: string;
+  images?: string[];
+}
+
+export interface CartItem extends Product {
+
+  quantity: number;
+
+}
 // Heart Icon Component with animation states
 const HeartIcon = memo(({
   isActive,
