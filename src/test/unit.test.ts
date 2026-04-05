@@ -72,7 +72,7 @@ describe('Cart Operations', () => {
       { ...mockProduct, quantity: 2 },
       { ...mockProducts[1], quantity: 1 }
     ]
-    
+
     const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
     expect(total).toBe(1997)
   })
@@ -81,10 +81,10 @@ describe('Cart Operations', () => {
     const item: CartItem = { ...mockProduct, quantity: 1 }
     item.quantity += 1
     expect(item.quantity).toBe(2)
-    
+
     item.quantity -= 1
     expect(item.quantity).toBe(1)
-    
+
     item.quantity = 0
     expect(item.quantity).toBe(0)
   })
@@ -93,10 +93,10 @@ describe('Cart Operations', () => {
 describe('Wishlist Operations', () => {
   it('should add and remove items from wishlist', () => {
     let wishlist: number[] = []
-    
+
     wishlist.push(1)
     expect(wishlist).toContain(1)
-    
+
     wishlist = wishlist.filter(id => id !== 1)
     expect(wishlist).not.toContain(1)
   })
@@ -107,11 +107,11 @@ describe('Wishlist Operations', () => {
         ? wishlist.filter(wishlistId => wishlistId !== id)
         : [...wishlist, id]
     }
-    
+
     let wishlist: number[] = []
     wishlist = toggleWishlist(wishlist, 1)
     expect(wishlist).toEqual([1])
-    
+
     wishlist = toggleWishlist(wishlist, 1)
     expect(wishlist).toEqual([])
   })
@@ -122,7 +122,7 @@ describe('Product Filtering', () => {
     const filterByCategory = (products: Product[], category: string) => {
       return products.filter(p => p.category === category)
     }
-    
+
     const filtered = filterByCategory(mockProducts, 'smartphones')
     expect(filtered.length).toBe(3)
   })
@@ -131,7 +131,7 @@ describe('Product Filtering', () => {
     const filterByPrice = (products: Product[], min: number, max: number) => {
       return products.filter(p => p.price >= min && p.price <= max)
     }
-    
+
     const filtered = filterByPrice(mockProducts, 500, 1000)
     expect(filtered.length).toBe(2)
     expect(filtered.map(p => p.id)).toEqual([1, 2])
@@ -140,15 +140,15 @@ describe('Product Filtering', () => {
   it('should filter products by search term', () => {
     const searchProducts = (products: Product[], term: string) => {
       const lowerTerm = term.toLowerCase()
-      return products.filter(p => 
+      return products.filter(p =>
         p.title.toLowerCase().includes(lowerTerm) ||
         p.description.toLowerCase().includes(lowerTerm)
       )
     }
-    
+
     const results = searchProducts(mockProducts, 'iphone')
     expect(results.length).toBe(2)
-    
+
     const brandResults = searchProducts(mockProducts, 'samsung')
     expect(brandResults.length).toBe(1)
   })
@@ -168,14 +168,14 @@ describe('Product Sorting', () => {
   })
 
   it('should sort by rating descending', () => {
-    const sorted = [...mockProducts].sort((a, b) => 
+    const sorted = [...mockProducts].sort((a, b) =>
       (b.rating ?? 0) - (a.rating ?? 0)
     )
     expect(sorted[0].id).toBe(1)
   })
 
   it('should sort by discount descending', () => {
-    const sorted = [...mockProducts].sort((a, b) => 
+    const sorted = [...mockProducts].sort((a, b) =>
       (b.discountPercentage ?? 0) - (a.discountPercentage ?? 0)
     )
     expect(sorted[0].id).toBe(2)
@@ -187,18 +187,18 @@ describe('Category Operations', () => {
   it('should generate categories from products', () => {
     const generateCategories = (products: Product[]) => {
       const categoryMap = new Map<string, number>()
-      
+
       products.forEach(product => {
         const count = categoryMap.get(product.category) || 0
         categoryMap.set(product.category, count + 1)
       })
-      
+
       return Array.from(categoryMap.entries()).map(([name, count]) => ({
         name,
         count
       }))
     }
-    
+
     const categories = generateCategories(mockProducts)
     expect(categories.length).toBe(1)
     expect(categories[0].name).toBe('smartphones')
@@ -211,7 +211,7 @@ describe('Theme Management', () => {
     const toggleTheme = (theme: 'light' | 'dark'): 'light' | 'dark' => {
       return theme === 'light' ? 'dark' : 'light'
     }
-    
+
     expect(toggleTheme('light')).toBe('dark')
     expect(toggleTheme('dark')).toBe('light')
   })
@@ -224,14 +224,14 @@ describe('localStorage Operations', () => {
       wishlist: [1, 2],
       theme: 'dark' as const
     }
-    
+
     localStorage.setItem('test_key', JSON.stringify(testState))
     const loaded = JSON.parse(localStorage.getItem('test_key') || '{}')
-    
+
     expect(loaded.cart).toEqual(testState.cart)
     expect(loaded.wishlist).toEqual(testState.wishlist)
     expect(loaded.theme).toBe('dark')
-    
+
     localStorage.removeItem('test_key')
   })
 
@@ -244,7 +244,7 @@ describe('localStorage Operations', () => {
         return {}
       }
     }
-    
+
     expect(loadStateFromStorage('nonexistent')).toEqual({})
   })
 })
@@ -257,7 +257,7 @@ describe('API Response Handling', () => {
       skip: 0,
       limit: 30
     }
-    
+
     expect(mockResponse.products).toHaveLength(3)
     expect(mockResponse.total).toBeGreaterThan(0)
   })
@@ -266,13 +266,13 @@ describe('API Response Handling', () => {
     const handleError = (error: { response?: { data?: { message?: string } }; message: string }) => {
       return error.response?.data?.message || error.message
     }
-    
+
     const networkError = { message: 'Network Error' }
     expect(handleError(networkError)).toBe('Network Error')
-    
-    const serverError = { 
-      message: 'Request failed', 
-      response: { data: { message: 'Product not found' } } 
+
+    const serverError = {
+      message: 'Request failed',
+      response: { data: { message: 'Product not found' } }
     }
     expect(handleError(serverError)).toBe('Product not found')
   })
@@ -283,7 +283,7 @@ describe('Price Calculation Utilities', () => {
     const calculateDiscountedPrice = (price: number, discountPercent: number): number => {
       return price * (1 - discountPercent / 100)
     }
-    
+
     expect(calculateDiscountedPrice(100, 10)).toBe(90)
     expect(calculateDiscountedPrice(549, 12.96)).toBeCloseTo(477.85, 1)
     expect(calculateDiscountedPrice(899, 17.94)).toBeCloseTo(737.72, 1)
@@ -293,18 +293,18 @@ describe('Price Calculation Utilities', () => {
     const calculateSavings = (originalPrice: number, discountPercent: number): number => {
       return originalPrice * (discountPercent / 100)
     }
-    
+
     expect(calculateSavings(100, 10)).toBe(10)
     expect(calculateSavings(549, 12.96)).toBeCloseTo(71.15)
   })
 
   it('should handle zero discount', () => {
     const calculateDiscountedPrice = (price: number, discountPercent: number): number => {
-      return discountPercent > 0 
+      return discountPercent > 0
         ? price * (1 - discountPercent / 100)
         : price
     }
-    
+
     expect(calculateDiscountedPrice(100, 0)).toBe(100)
     expect(calculateDiscountedPrice(1249, 0)).toBe(1249)
   })
@@ -315,12 +315,12 @@ describe('Order Summary Calculations', () => {
     const calculateSubtotal = (items: CartItem[]): number => {
       return items.reduce((sum, item) => sum + item.price * item.quantity, 0)
     }
-    
+
     const items: CartItem[] = [
       { ...mockProduct, quantity: 2 },
       { ...mockProducts[1], quantity: 1 }
     ]
-    
+
     expect(calculateSubtotal(items)).toBe(1997)
   })
 
@@ -328,7 +328,7 @@ describe('Order Summary Calculations', () => {
     const calculateShipping = (subtotal: number, freeShippingThreshold: number, shippingCost: number): number => {
       return subtotal >= freeShippingThreshold ? 0 : shippingCost
     }
-    
+
     expect(calculateShipping(30, 50, 5.99)).toBe(5.99)
     expect(calculateShipping(50, 50, 5.99)).toBe(0)
     expect(calculateShipping(100, 50, 5.99)).toBe(0)
@@ -338,7 +338,7 @@ describe('Order Summary Calculations', () => {
     const calculateTax = (subtotal: number, taxRate: number): number => {
       return subtotal * taxRate
     }
-    
+
     expect(calculateTax(100, 0.1)).toBe(10)
     expect(calculateTax(549, 0.1)).toBeCloseTo(54.9)
   })
@@ -347,7 +347,7 @@ describe('Order Summary Calculations', () => {
     const applyPromoDiscount = (subtotal: number, promoCode: string): number => {
       return promoCode.toUpperCase() === 'SAVE10' ? subtotal * 0.1 : 0
     }
-    
+
     expect(applyPromoDiscount(100, 'save10')).toBe(10)
     expect(applyPromoDiscount(100, 'SAVE10')).toBe(10)
     expect(applyPromoDiscount(100, 'INVALID')).toBe(0)
@@ -357,12 +357,12 @@ describe('Order Summary Calculations', () => {
     const calculateTotal = (subtotal: number, shipping: number, tax: number, discount: number): number => {
       return subtotal + shipping + tax - discount
     }
-    
+
     const subtotal = 549
     const shipping = 0
     const tax = 54.9
     const discount = 54.9
-    
+
     expect(calculateTotal(subtotal, shipping, tax, discount)).toBe(549)
   })
 })
@@ -372,9 +372,9 @@ describe('Product Availability', () => {
     const isInStock = (product: Product): boolean => {
       return (product.stock ?? 0) > 0
     }
-    
+
     expect(isInStock(mockProduct)).toBe(true)
-    
+
     const outOfStockProduct = { ...mockProduct, stock: 0 }
     expect(isInStock(outOfStockProduct)).toBe(false)
   })
@@ -384,9 +384,9 @@ describe('Product Availability', () => {
       const stock = product.stock ?? 0
       return stock > 0 && stock <= threshold
     }
-    
+
     expect(isLowStock(mockProduct)).toBe(false)
-    
+
     const lowStockProduct = { ...mockProduct, stock: 5 }
     expect(isLowStock(lowStockProduct)).toBe(true)
   })
@@ -395,7 +395,7 @@ describe('Product Availability', () => {
     const clampQuantity = (quantity: number, maxStock: number): number => {
       return Math.min(Math.max(1, quantity), maxStock)
     }
-    
+
     expect(clampQuantity(5, 10)).toBe(5)
     expect(clampQuantity(15, 10)).toBe(10)
     expect(clampQuantity(0, 10)).toBe(1)
@@ -409,7 +409,7 @@ describe('URL Query Parameter Handling', () => {
       const params = new URLSearchParams(search)
       return params.get('category') || 'all'
     }
-    
+
     expect(getCategoryFromParams('?category=smartphones')).toBe('smartphones')
     expect(getCategoryFromParams('?category=laptops')).toBe('laptops')
     expect(getCategoryFromParams('')).toBe('all')
@@ -425,7 +425,7 @@ describe('URL Query Parameter Handling', () => {
       })
       return searchParams.toString()
     }
-    
+
     expect(buildQueryString({ category: 'smartphones', sort: 'price-asc' }))
       .toBe('category=smartphones&sort=price-asc')
     expect(buildQueryString({ category: 'all' }))

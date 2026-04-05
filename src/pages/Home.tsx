@@ -6,7 +6,21 @@ import { useAppContext } from '../context/AppContext';
 import Slider from '../components/Slider';
 import ProductCard from '../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
-import type { Product } from '@/types/index';
+
+export interface Product {
+    id: number;
+    title: string;
+    description: string;
+    price: number;
+    discountPercentage?: number;
+    rating?: number;
+    stock?: number;
+    brand?: string;
+    category: string;
+    thumbnail: string;
+    images?: string[];
+}
+
 
 const Home: React.FC = () => {
     const { state, fetchProducts } = useAppContext();
@@ -67,7 +81,7 @@ const Home: React.FC = () => {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {featuredCategories.map((category) => {
-                            const categoryProducts = state.products.filter((p) => p.category === category.name);
+                            const categoryProducts = state.products.filter((p: Product) => p.category === category.name);
                             const firstProduct = categoryProducts[0];
 
                             return (
@@ -109,19 +123,19 @@ const Home: React.FC = () => {
                                             )}
                                         </div>
 
-                                        {categoryProducts.some((p) => (p.discountPercentage ?? 0) > 0) && (
+                                        {categoryProducts.some((p: Product) => (p.discountPercentage ?? 0) > 0) && (
                                             <div className="mt-3">
                                                 <div className="flex items-center text-xs text-(--highlight-color)">
                                                     <span>Up to</span>
                                                     <span className="font-bold ml-1">
-                                                        {Math.max(...categoryProducts.map((p) => p.discountPercentage ?? 0))}% OFF
+                                                        {Math.max(...categoryProducts.map((p: Product) => p.discountPercentage ?? 0))}% OFF
                                                     </span>
                                                 </div>
                                                 <div className="w-full bg-gray-700 rounded-full h-1 mt-1">
                                                     <div
                                                         className="bg-(--highlight-color) h-1 rounded-full transition-all duration-500 group-hover:w-full"
                                                         style={{
-                                                            width: `${Math.max(...categoryProducts.map((p) => p.discountPercentage ?? 0))}%`
+                                                            width: `${Math.max(...categoryProducts.map((p: Product) => p.discountPercentage ?? 0))}%`
                                                         }}
                                                     />
                                                 </div>

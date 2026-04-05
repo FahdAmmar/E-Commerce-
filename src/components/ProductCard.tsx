@@ -2,9 +2,23 @@
 // =================== مكون بطاقة المنتج المحسن ===================
 
 import React from 'react';
-import type { Product } from '../types/index';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
+
+export interface Product {
+    id: number;
+    title: string;
+    description: string;
+    price: number;
+    discountPercentage?: number;
+    rating?: number;
+    stock?: number;
+    brand?: string;
+    category: string;
+    thumbnail: string;
+    images?: string[];
+}
+
 
 interface ProductCardProps {
     product: Product;

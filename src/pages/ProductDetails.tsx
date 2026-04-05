@@ -5,7 +5,28 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import ProductCard from '../components/ProductCard';
-import type { Product } from '../types/index';
+
+export interface Product {
+    id: number;
+    title: string;
+    description: string;
+    price: number;
+    discountPercentage?: number;
+    rating?: number;
+    stock?: number;
+    brand?: string;
+    category: string;
+    thumbnail: string;
+    images?: string[];
+}
+
+
+export interface Category {
+    name: string;
+    count: number;
+    image: string;
+    icon: string;
+}
 
 const ProductDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();

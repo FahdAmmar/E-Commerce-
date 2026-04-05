@@ -1,0 +1,18 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "openrouter": {
+      "npm": "@openrouter/ai-sdk-provider",
+      "name": "OpenRouter",
+      "options": {
+        "apiKey": "SK-OR-V1-06B0A47C4284034C63A2DD67ABFDA1DE69B2376F3AB2473AA4DECD4DD5D403C0",
+        "baseURL": "https://openrouter.ai/api/v1"
+      },
+      "models": {
+        "zai-org/glm-5": {
+          "name": "GLM-5"
+        }
+      }
+    }
+  }
+}

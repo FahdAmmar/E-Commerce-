@@ -2,8 +2,23 @@
 // =================== مكون السلايدر المحسن ===================
 
 import React, { useState, useEffect } from 'react';
-import type { Product } from '../types/index';
 import { useNavigate } from 'react-router-dom';
+
+
+export interface Product {
+    id: number;
+    title: string;
+    description: string;
+    price: number;
+    discountPercentage?: number;
+    rating?: number;
+    stock?: number;
+    brand?: string;
+    category: string;
+    thumbnail: string;
+    images?: string[];
+}
+
 
 interface SliderProps {
     products: Product[];

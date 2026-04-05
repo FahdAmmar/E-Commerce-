@@ -8,12 +8,12 @@ import { X, ArrowLeft, Truck, Heart, Minus, Plus, Sparkles, ShoppingBag, Shield,
 import type { CartItem } from '../types/index';
 
 // Heart Icon Component with animation states
-const HeartIcon = memo(({ 
-  isActive, 
-  onClick 
-}: { 
-  isActive: boolean; 
-  onClick: (e: React.MouseEvent) => void; 
+const HeartIcon = memo(({
+  isActive,
+  onClick
+}: {
+  isActive: boolean;
+  onClick: (e: React.MouseEvent) => void;
 }) => (
   <button
     onClick={onClick}
@@ -21,8 +21,8 @@ const HeartIcon = memo(({
       absolute -top-3 -right-3 z-20 p-2 rounded-full
       transition-all duration-300 ease-out
       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500
-      ${isActive 
-        ? 'bg-gradient-to-br from-red-500 to-pink-500 text-white shadow-lg shadow-red-500/50 scale-110' 
+      ${isActive
+        ? 'bg-gradient-to-br from-red-500 to-pink-500 text-white shadow-lg shadow-red-500/50 scale-110'
         : 'bg-white/90 backdrop-blur-sm text-gray-400 hover:text-red-500 shadow-md hover:shadow-lg'
       }
       hover:scale-125 active:scale-95
@@ -30,8 +30,8 @@ const HeartIcon = memo(({
     aria-label={isActive ? 'Remove from wishlist' : 'Add to wishlist'}
     aria-pressed={isActive}
   >
-    <Heart 
-      className={`w-4 h-4 transition-all duration-300 ${isActive ? 'fill-current scale-110' : ''}`} 
+    <Heart
+      className={`w-4 h-4 transition-all duration-300 ${isActive ? 'fill-current scale-110' : ''}`}
     />
   </button>
 ));
@@ -57,14 +57,14 @@ const RemoveButton = memo(({ onClick }: { onClick: () => void }) => (
 ));
 
 // Quantity Controls Component
-const QuantityControls = memo(({ 
-  quantity, 
-  onIncrease, 
-  onDecrease 
-}: { 
-  quantity: number; 
-  onIncrease: () => void; 
-  onDecrease: () => void 
+const QuantityControls = memo(({
+  quantity,
+  onIncrease,
+  onDecrease
+}: {
+  quantity: number;
+  onIncrease: () => void;
+  onDecrease: () => void
 }) => (
   <div className="flex items-center gap-1 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-full p-1">
     <button
@@ -131,7 +131,7 @@ const CartItemCard = memo(({ item }: { item: CartItem }) => {
   const itemTotal = item.price * item.quantity;
 
   return (
-    <div 
+    <div
       className={`
         card group relative overflow-hidden
         transition-all duration-300 ease-out
@@ -141,7 +141,7 @@ const CartItemCard = memo(({ item }: { item: CartItem }) => {
     >
       {/* Decorative gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-transparent group-hover:from-primary-500/5 group-hover:via-transparent group-hover:to-transparent pointer-events-none transition-all duration-500" />
-      
+
       <div className="relative flex items-center p-4 sm:p-6">
         {/* Product Image */}
         <div className="relative flex-shrink-0">
@@ -161,20 +161,20 @@ const CartItemCard = memo(({ item }: { item: CartItem }) => {
               loading="lazy"
             />
           </div>
-          
+
           {/* Wishlist Button */}
-          <HeartIcon 
-            isActive={isInWishlist} 
-            onClick={handleWishlistToggle} 
+          <HeartIcon
+            isActive={isInWishlist}
+            onClick={handleWishlistToggle}
           />
-          
+
           {/* Remove Button */}
           <RemoveButton onClick={handleRemove} />
         </div>
 
         {/* Product Info */}
         <div className="flex-1 min-w-0 ml-3 sm:ml-5">
-          <Link 
+          <Link
             to={`/product/${item.id}`}
             className="block group/link"
           >
@@ -182,15 +182,15 @@ const CartItemCard = memo(({ item }: { item: CartItem }) => {
               {item.title}
             </h3>
           </Link>
-          
+
           <p className="text-primary-500 font-bold text-sm sm:text-base mt-1 flex items-center gap-1">
             <span className="text-[0.7rem] text-muted-foreground font-medium">Unit:</span>
             ${item.price.toFixed(2)}
           </p>
-          
+
           {/* Mobile quantity controls */}
           <div className="mt-3 sm:hidden">
-            <QuantityControls 
+            <QuantityControls
               quantity={item.quantity}
               onIncrease={handleIncrease}
               onDecrease={handleDecrease}
@@ -200,12 +200,12 @@ const CartItemCard = memo(({ item }: { item: CartItem }) => {
 
         {/* Desktop Quantity & Price */}
         <div className="hidden sm:flex items-center gap-6 lg:gap-8">
-          <QuantityControls 
+          <QuantityControls
             quantity={item.quantity}
             onIncrease={handleIncrease}
             onDecrease={handleDecrease}
           />
-          
+
           <div className="w-28 text-right">
             <p className="font-bold text-xl text-foreground tabular-nums">
               ${itemTotal.toFixed(2)}
@@ -230,16 +230,16 @@ const CartItemCard = memo(({ item }: { item: CartItem }) => {
 });
 
 // Promo Code Input Component
-const PromoCodeInput = memo(({ 
-  promoCode, 
-  promoApplied, 
-  onApply, 
-  onChange 
-}: { 
-  promoCode: string; 
-  promoApplied: boolean; 
-  onApply: () => void; 
-  onChange: (value: string) => void 
+const PromoCodeInput = memo(({
+  promoCode,
+  promoApplied,
+  onApply,
+  onChange
+}: {
+  promoCode: string;
+  promoApplied: boolean;
+  onApply: () => void;
+  onChange: (value: string) => void
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
@@ -273,12 +273,12 @@ const PromoCodeInput = memo(({
             w-full px-4 py-3 pr-12 rounded-xl
             bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900
             border-2 transition-all duration-300
-            ${isFocused && !promoApplied 
-              ? 'border-primary-500 ring-4 ring-primary-500/10' 
+            ${isFocused && !promoApplied
+              ? 'border-primary-500 ring-4 ring-primary-500/10'
               : 'border-transparent'
             }
-            ${promoApplied 
-              ? 'bg-green-50 dark:bg-green-900/20 border-green-500/30' 
+            ${promoApplied
+              ? 'bg-green-50 dark:bg-green-900/20 border-green-500/30'
               : 'hover:border-gray-200 dark:hover:border-gray-700'
             }
             focus:outline-none
@@ -290,8 +290,8 @@ const PromoCodeInput = memo(({
           className={`
             absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 rounded-lg
             font-medium text-sm transition-all duration-300
-            ${promoApplied 
-              ? 'bg-green-500 text-white cursor-default' 
+            ${promoApplied
+              ? 'bg-green-500 text-white cursor-default'
               : 'bg-gradient-to-r from-primary-500 to-primary-600 text-white hover:shadow-lg hover:shadow-primary-500/30 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed'
             }
           `}
@@ -316,11 +316,11 @@ const PromoCodeInput = memo(({
 });
 
 // Order Summary Component
-const OrderSummary = memo(({ 
-  subtotal, 
-  shipping, 
-  tax, 
-  discount, 
+const OrderSummary = memo(({
+  subtotal,
+  shipping,
+  tax,
+  discount,
   total,
   promoCode,
   promoApplied,
@@ -353,7 +353,7 @@ const OrderSummary = memo(({
         <span className="text-muted-foreground">Subtotal</span>
         <span className="font-semibold tabular-nums">${subtotal.toFixed(2)}</span>
       </div>
-      
+
       <div className="flex justify-between text-sm">
         <span className="text-muted-foreground flex items-center gap-1.5">
           Shipping
@@ -369,12 +369,12 @@ const OrderSummary = memo(({
           ) : `$${shipping.toFixed(2)}`}
         </span>
       </div>
-      
+
       <div className="flex justify-between text-sm">
         <span className="text-muted-foreground">Tax (10%)</span>
         <span className="font-semibold tabular-nums">${tax.toFixed(2)}</span>
       </div>
-      
+
       {promoApplied && discount > 0 && (
         <div className="flex justify-between text-sm text-green-500 animate-fadeIn">
           <span className="flex items-center gap-1.5">
@@ -394,7 +394,7 @@ const OrderSummary = memo(({
             Add <span className="font-semibold text-foreground">${(50 - subtotal).toFixed(2)}</span> more for free shipping
           </p>
           <div className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-            <div 
+            <div
               className="h-full bg-gradient-to-r from-primary-500 to-primary-400 rounded-full transition-all duration-500"
               style={{ width: `${Math.min((subtotal / 50) * 100, 100)}%` }}
             />
@@ -416,7 +416,7 @@ const OrderSummary = memo(({
     </div>
 
     {/* Promo Code Input */}
-    <PromoCodeInput 
+    <PromoCodeInput
       promoCode={promoCode}
       promoApplied={promoApplied}
       onApply={onApplyPromo}
@@ -474,8 +474,8 @@ const EmptyCart = memo(() => (
         Looks like you haven't added anything to your cart yet. Let's find something you'll love!
       </p>
 
-      <Link 
-        to="/products" 
+      <Link
+        to="/products"
         className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-base font-bold group"
       >
         <ShoppingBag className="w-5 h-5 transition-transform group-hover:scale-110" />
@@ -524,7 +524,7 @@ const Cart: React.FC = () => {
             {state.cart.length} {state.cart.length === 1 ? 'item' : 'items'} in your cart
           </p>
         </div>
-        
+
         <Link
           to="/products"
           className="hidden sm:inline-flex items-center gap-2 text-primary-500 hover:text-primary-600 font-medium transition-colors group"

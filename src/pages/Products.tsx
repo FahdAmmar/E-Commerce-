@@ -5,7 +5,30 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useAppContext } from '../context/AppContext';
 import ProductCard from '../components/ProductCard';
 import { useSearchParams } from 'react-router-dom';
-import type { Product, Category } from '../types/index';
+
+
+export interface Product {
+    id: number;
+    title: string;
+    description: string;
+    price: number;
+    discountPercentage?: number;
+    rating?: number;
+    stock?: number;
+    brand?: string;
+    category: string;
+    thumbnail: string;
+    images?: string[];
+}
+
+
+export interface Category {
+    name: string;
+    count: number;
+    image: string;
+    icon: string;
+}
+
 
 type SortOption = 'default' | 'price-asc' | 'price-desc' | 'rating-desc' | 'discount-desc';
 

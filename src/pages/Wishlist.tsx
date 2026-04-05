@@ -5,7 +5,21 @@ import React, { useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
 import ProductCard from '../components/ProductCard';
 import { Link } from 'react-router-dom';
-import type { Product } from '../types/index';
+
+export interface Product {
+    id: number;
+    title: string;
+    description: string;
+    price: number;
+    discountPercentage?: number;
+    rating?: number;
+    stock?: number;
+    brand?: string;
+    category: string;
+    thumbnail: string;
+    images?: string[];
+}
+
 
 const Wishlist: React.FC = () => {
     const { state, fetchProducts } = useAppContext();
